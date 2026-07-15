@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Amara &amp; Julian — RSVP</title>
+<title>Zarith Sofia &amp; Naufal — RSVP</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Tenor+Sans&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Pinyon+Script&family=Tangerine:wght@400;700&family=Tenor+Sans&display=swap');
 
   :root{
     --ivory: #FAF6EF;
@@ -80,15 +80,16 @@
 
   .hero .eyebrow{ opacity:0; animation:fadeUp 0.9s ease forwards; animation-delay:0.1s; }
   .hero .names{
-    font-size:clamp(48px, 9vw, 92px);
-    font-style:italic;
+    font-family:'Pinyon Script', cursive;
+    font-size:clamp(60px, 12vw, 108px);
+    font-weight:400;
     line-height:1.05;
     margin:18px 0 10px;
     opacity:0;
     animation:fadeUp 1s ease forwards;
     animation-delay:0.3s;
   }
-  .amp{ color:var(--rose); font-size:0.7em; padding:0 6px; }
+  .amp{ color:var(--rose); font-size:0.75em; padding:0 8px; }
   .hero .sub{
     font-family:'EB Garamond', serif;
     font-style:italic;
@@ -123,6 +124,87 @@
 
   @keyframes fadeUp{ from{ opacity:0; transform:translateY(14px);} to{ opacity:1; transform:translateY(0);} }
   @keyframes bob{ 0%,100%{ transform:translate(-50%,0);} 50%{ transform:translate(-50%,6px);} }
+
+  /* ---------- INVITATION ---------- */
+  .invite{
+    text-align:center;
+    padding:80px 24px;
+    max-width:640px;
+    margin:0 auto;
+    background:var(--ivory-deep);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .invite-parents{
+    font-family:'Tangerine', cursive;
+    font-size:clamp(32px, 6vw, 50px);
+    font-weight:700;
+    color:var(--green-deep);
+    line-height:1.2;
+    margin-bottom:16px;
+  }
+  .invite-parents p,
+  .invite-parents h4{
+    margin:0;
+  }
+  .invite-parents p + h4{
+    margin-top:6px;
+  }
+  .invite-parents .invite-occasion{
+    font-size:clamp(24px, 4.5vw, 34px);
+    opacity:1;
+  }
+  .invite-parents .and{
+    font-family:'Tenor Sans', sans-serif;
+    font-size:11px;
+    letter-spacing:0.24em;
+    color:var(--gold);
+    margin:12px 0;
+  }
+  .invite-lead{
+    font-style:italic;
+    font-size:18px;
+    color:var(--green);
+    line-height:1.75;
+    margin:0;
+  }
+  .invite-occasion{
+    font-size:17px;
+    color:var(--ink);
+    opacity:0.9;
+    margin:0 0 10px;
+  }
+  .invite-couple{
+    font-family:'Pinyon Script', cursive;
+    font-size:clamp(44px, 8.5vw, 64px);
+    font-weight:400;
+    line-height:1.1;
+    color:var(--green-deep);
+    margin:0;
+  }
+  .invite-meta{
+    margin-top:36px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+  }
+  .invite-meta-item{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+  .invite-meta-label{
+    font-family:'Tenor Sans', sans-serif;
+    font-size:11px;
+    letter-spacing:0.24em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+  .invite-meta-value{
+    font-family:'Cinzel', serif;
+    font-size:22px;
+    color:var(--green-deep);
+  }
 
   /* ---------- SECTION SHELL ---------- */
   section{
@@ -407,23 +489,47 @@
   #paxField.show{ display:block; }
 
   .seal-btn{
-    display:block;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
     margin:38px auto 0;
     width:118px; height:118px;
     border-radius:50%;
-    border:1px solid var(--gold);
-    background:var(--green-deep);
-    color:var(--ivory);
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    transition:transform .25s ease, filter .25s ease;
+  }
+  .seal-btn-icon{
+    width:100px;
+    height:100px;
+    object-fit:contain;
+    pointer-events:none;
+  }
+  .seal-btn-text{
     font-family:'Cormorant Garamond', serif;
     font-style:italic;
-    font-size:19px;
-    cursor:pointer;
-    transition:transform .25s ease, box-shadow .25s ease;
-    box-shadow:0 0 0 6px var(--ivory), 0 0 0 7px var(--line);
+    font-size:14px;
+    color:var(--green-deep);
+    pointer-events:none;
   }
-  .seal-btn:hover{ transform:scale(1.05); }
-  .seal-btn:active{ transform:scale(0.98); }
-  .seal-btn:disabled{ opacity:0.6; cursor:default; transform:none; }
+  .seal-btn:hover{
+    transform:scale(1.06);
+    filter:brightness(1.15);
+  }
+  .seal-btn:active{
+    transform:scale(0.97);
+    filter:brightness(1.3);
+  }
+  .seal-btn:disabled{
+    opacity:0.6;
+    cursor:default;
+    transform:none;
+    filter:none;
+  }
   .seal-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:6px; }
 
   .form-msg{
@@ -441,6 +547,63 @@
   }
   .thankyou h3{ font-size:32px; font-style:italic; margin-bottom:12px; }
   .thankyou p{ color:var(--green); }
+
+  select#paxCount{
+    width:100%;
+    border:none;
+    border-bottom:1px solid var(--line);
+    background:transparent;
+    font-family:'EB Garamond', serif;
+    font-size:18px;
+    color:var(--ink);
+    padding:8px 2px;
+    outline:none;
+    transition:border-color .25s ease;
+  }
+  select#paxCount:focus{ border-color:var(--rose); }
+
+  /* ---------- COUNTDOWN ---------- */
+  .countdown-grid{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+    flex-wrap:wrap;
+  }
+  .cd-unit{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-width:78px;
+  }
+  .cd-number{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:52px;
+    line-height:1;
+    color:var(--green-deep);
+  }
+  .cd-label{
+    margin-top:8px;
+    font-family:'Tenor Sans', sans-serif;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--gold);
+  }
+  .cd-sep{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:40px;
+    color:var(--line);
+    transform:translateY(-8px);
+  }
+  @media (max-width:620px){
+    .countdown-grid{ gap:10px; }
+    .cd-unit{ min-width:60px; }
+    .cd-number{ font-size:38px; }
+    .cd-sep{ font-size:30px; transform:translateY(-6px); }
+  }
 
   /* ---------- FOOTER / ADMIN ---------- */
   footer{
@@ -547,14 +710,40 @@
   </div>
 
   <div class="hero-frame">
-    <div class="eyebrow">Together with their families</div>
-    <h1 class="names">Amara <span class="amp">&amp;</span> Julian</h1>
-    <div class="sub">request the pleasure of your company as they exchange vows</div>
+    <div class="eyebrow">Majlis Raikan Cinta</div>
+    <h1 class="names">Zarith Sofia <span class="amp">&amp;</span> <br> Naufal</h1> <br>
+    <div class="sub">membina ikatan cinta, keluarga yang dirahmati dan diberkati olehNya.</div>
     <div class="divider"></div>
-    <div class="date">SATURDAY, OCTOBER 17, 2026 · CASTELLO DI VINCIGLIATA, FLORENCE</div>
+    <div class="date">7 NOVEMBER, 2026 · ABEDEEN CLUBHOUSE, CYBERJAYA</div>
   </div>
-  <div class="scroll-cue">SCROLL · TO RSVP</div>
+  <div class="scroll-cue">Borang RSVP di bawah</div>
 </div>
+
+<!-- INVITATION -->
+<section class="invite" id="invitation">
+  <p class="invite-occasion"> Kami, </p>
+  <div class="invite-parents">
+    <h4>Zam Azizul &amp; Suriana</h4>
+  </div>
+  <p class="invite-lead">dengan penuh rasa kesyukuran menjemput<br>Dato' / Datin / Tuan / Puan / Encik / Puan</p>
+  <p class="invite-occasion">dan seisi keluarga hadir ke majlis perkahwinan puteri kami dan pilihan hatinya</p>
+  <br>
+  <p class="invite-couple">Zarith Sofia <span class="amp">&amp;</span> Naufal</p>
+  <div class="invite-meta">
+    <div class="invite-meta-item">
+      <span class="invite-meta-label">Tempat</span>
+      <span class="invite-meta-value">Abedeen Clubhouse, Cyberjaya</span>
+    </div>
+    <div class="invite-meta-item">
+      <span class="invite-meta-label">Tarikh</span>
+      <span class="invite-meta-value">Sabtu, 7 November 2026</span>
+    </div>
+    <div class="invite-meta-item">
+      <span class="invite-meta-label">Masa</span>
+      <span class="invite-meta-value">11 AM - 4 PM</span>
+    </div>
+  </div>
+</section>
 
 <!-- STORY -->
 <section>
@@ -567,38 +756,67 @@
 <!-- DETAILS -->
 <section>
   <div class="section-head">
-    <div class="eyebrow">The Occasion</div>
-    <h2>Schedule of Events</h2>
+    <div class="eyebrow">Majlis Resespsi</div>
+    <h2>Aturcara Majlis</h2>
   </div>
   <ul class="timeline">
     <li class="t-item">
+      <div class="t-time">11:00 AM</div>
+      <div class="t-title">Kehadiran tetamu</div>
+      <!-- <div class="t-place">The Olive Terrace, Castello di Vincigliata</div> -->
+    </li>
+    <li class="t-item">
+      <div class="t-time">12:30 PM</div>
+      <div class="t-title">Ketibaan Pengantin</div>
+      <!-- <div class="t-place">The Courtyard Garden</div> -->
+    </li>
+    <li class="t-item">
+      <div class="t-time">2:00 PM</div>
+      <div class="t-title">Sesi Fotografi</div>
+      <!-- <div class="t-place">The Great Hall</div> -->
+    </li>
+    <li class="t-item">
       <div class="t-time">3:30 PM</div>
-      <div class="t-title">Ceremony</div>
-      <div class="t-place">The Olive Terrace, Castello di Vincigliata</div>
-    </li>
-    <li class="t-item">
-      <div class="t-time">5:00 PM</div>
-      <div class="t-title">Cocktail Hour</div>
-      <div class="t-place">The Courtyard Garden</div>
-    </li>
-    <li class="t-item">
-      <div class="t-time">6:30 PM</div>
-      <div class="t-title">Reception &amp; Dinner</div>
-      <div class="t-place">The Great Hall</div>
-    </li>
-    <li class="t-item">
-      <div class="t-time">9:00 PM</div>
-      <div class="t-title">Dancing</div>
-      <div class="t-place">The Great Hall</div>
+      <div class="t-title">Majlis Bersurai</div>
+      <!-- <div class="t-place">The Great Hall</div> -->
     </li>
   </ul>
+</section>
+
+<!-- COUNTDOWN -->
+<section id="countdown">
+  <div class="section-head">
+    <div class="eyebrow">Menghitung Hari Bagi Meraikan</div>
+    <h2>Majlis Bahagia Kami</h2>
+  </div>
+  <div class="countdown-grid" id="countdownGrid">
+    <div class="cd-unit">
+      <div class="cd-number" id="cdDays">00</div>
+      <div class="cd-label">Hari</div>
+    </div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit">
+      <div class="cd-number" id="cdHours">00</div>
+      <div class="cd-label">Jam</div>
+    </div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit">
+      <div class="cd-number" id="cdMinutes">00</div>
+      <div class="cd-label">Minit</div>
+    </div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit">
+      <div class="cd-number" id="cdSeconds">00</div>
+      <div class="cd-label">Saat</div>
+    </div>
+  </div>
 </section>
 
 <!-- GALLERY -->
 <section id="gallery">
   <div class="section-head">
-    <div class="eyebrow">Moments</div>
-    <h2>Our Gallery</h2>
+    <div class="eyebrow">Kenangan</div>
+    <h2>Galeri</h2>
   </div>
   <div class="carousel" id="carousel">
     <div class="carousel-track" id="carouselTrack">
@@ -622,35 +840,35 @@
 <!-- WELL WISHES -->
 <section id="wishes">
   <div class="section-head">
-    <div class="eyebrow">From Loved Ones</div>
-    <h2>Well Wishes</h2>
+    <div class="eyebrow">Daripada Tetamu</div>
+    <h2>Ucapan</h2>
   </div>
   <div id="wishesList" class="wishes-grid">
-    <div class="admin-empty">Be the first to leave a message below.</div>
+    <div class="admin-empty">Tinggalkan mesej di ruangan RSVP.</div>
   </div>
 </section>
 
 <!-- CONTACT -->
 <section id="contact">
   <div class="section-head">
-    <div class="eyebrow">Questions?</div>
-    <h2>Contact</h2>
+    <div class="eyebrow">Ahli Majlis</div>
+    <h2>Hubungi</h2>
   </div>
   <div class="contact-grid">
     <div class="contact-card">
-      <div class="contact-role">Maid of Honor</div>
-      <div class="contact-name">Sophia Bennett</div>
-      <div class="contact-detail">+1 (555) 019-2231</div>
+      <div class="contact-role">Bapa Pengantin</div>
+      <div class="contact-name">Zam Azizul</div>
+      <div class="contact-detail">0176958195</div>
     </div>
     <div class="contact-card">
-      <div class="contact-role">Best Man</div>
-      <div class="contact-name">Noah Whitfield</div>
-      <div class="contact-detail">+1 (555) 083-4471</div>
+      <div class="contact-role">Ibu Pengantin</div>
+      <div class="contact-name">Suriana</div>
+      <div class="contact-detail">0193485479</div>
     </div>
     <div class="contact-card">
-      <div class="contact-role">Wedding Coordinator</div>
-      <div class="contact-name">Elena Rossi</div>
-      <div class="contact-detail">coordinator@amarajulian.love</div>
+      <div class="contact-role">Bride</div>
+      <div class="contact-name">Zarith Sofia</div>
+      <div class="contact-detail">0124854083</div>
     </div>
   </div>
 </section>
@@ -658,52 +876,62 @@
 <!-- RSVP -->
 <section id="rsvp">
   <div class="section-head">
-    <div class="eyebrow">Kindly Respond</div>
+    <div class="eyebrow">Mohon maklum balas</div>
     <h2>RSVP</h2>
   </div>
 
   <div class="rsvp-wrap">
     <form id="rsvpForm">
       <div class="field">
-        <label for="guestName">Full name(s)</label>
-        <input type="text" id="guestName" placeholder="e.g. Sarah Tan" required />
+        <label for="guestName">Nama</label>
+        <input type="text" id="guestName" placeholder="e.g. Azira" required />
       </div>
 
       <div class="field">
-        <label>Will you be attending?</label>
+        <label>Kehadiran?</label>
         <div class="attend-toggle" role="radiogroup" aria-label="Attendance">
           <input type="radio" name="attend" id="attendYes" value="yes" />
-          <label class="opt" for="attendYes">Joyfully Accept</label>
+          <label class="opt" for="attendYes">Ya.</label>
           <input type="radio" name="attend" id="attendNo" value="no" />
-          <label class="opt" for="attendNo">Regretfully Decline</label>
+          <label class="opt" for="attendNo">Tidak.</label>
         </div>
       </div>
 
       <div class="field" id="paxField">
-        <label for="paxCount">Number of guests attending (incl. you)</label>
-        <input type="text" inputmode="numeric" id="paxCount" placeholder="e.g. 2" />
+        <label for="paxCount">Bilangan tetamu</label>
+        <select id="paxCount">
+          <option value="">Sila pilih</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+        </select>
       </div>
 
       <div class="field">
-        <label for="guestMsg">Message (optional)</label>
-        <textarea id="guestMsg" placeholder="Well wishes, dietary notes, song requests…"></textarea>
+        <label for="guestMsg">Ucapan</label>
+        <textarea id="guestMsg" placeholder="Tahniah...."></textarea>
       </div>
 
-      <button type="submit" class="seal-btn" id="submitBtn">Seal &amp; Send</button>
+      <button type="submit" class="seal-btn" id="submitBtn">
+        <img src="images/heart-icon.png" alt="" class="seal-btn-icon" />
+      </button>
       <div class="form-msg" id="formMsg"></div>
     </form>
 
     <div class="thankyou" id="thankYou" style="display:none;">
-      <h3 id="thankYouTitle">With gratitude</h3>
-      <p id="thankYouBody">Your response has been received.</p>
+      <h3 id="thankYouTitle">Terima kasih.</h3>
+      <p id="thankYouBody">Jumpa anda pada hari bahagia kami.</p>
     </div>
   </div>
 </section>
 
 <footer>
-  <div class="monogram">A &amp; J</div>
-  <div>#AMARAANDJULIAN &nbsp;·&nbsp; OCTOBER 17, 2026</div>
-  <button class="admin-link" id="adminToggle">couple's view</button>
+  <div class="monogram">ZS &amp; N</div>
+  <div>#NauFallForZarith &nbsp;·&nbsp; 7 NOVEMBER, 2026</div>
+  <!-- <button class="admin-link" id="adminToggle">couple's view</button> -->
 </footer>
 
 <button id="musicToggle" class="music-btn" aria-label="Play background music" aria-pressed="false" type="button">
@@ -726,6 +954,46 @@
 </div>
 
 <script>
+  document.addEventListener('DOMContentLoaded', function(){
+    const WEDDING_DATE = new Date('2026-10-17T15:30:00');
+
+    const elDays = document.getElementById('cdDays');
+    const elHours = document.getElementById('cdHours');
+    const elMinutes = document.getElementById('cdMinutes');
+    const elSeconds = document.getElementById('cdSeconds');
+
+    function pad(n){ return String(n).padStart(2, '0'); }
+
+    function update(){
+      const now = new Date();
+      let diff = WEDDING_DATE - now;
+
+      if(diff <= 0){
+        elDays.textContent = '00';
+        elHours.textContent = '00';
+        elMinutes.textContent = '00';
+        elSeconds.textContent = '00';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      diff -= days * (1000 * 60 * 60 * 24);
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      diff -= hours * (1000 * 60 * 60);
+      const minutes = Math.floor(diff / (1000 * 60));
+      diff -= minutes * (1000 * 60);
+      const seconds = Math.floor(diff / 1000);
+
+      elDays.textContent = pad(days);
+      elHours.textContent = pad(hours);
+      elMinutes.textContent = pad(minutes);
+      elSeconds.textContent = pad(seconds);
+    }
+
+    update();
+    setInterval(update, 1000);
+  });
+
 (function(){
   // Paste your deployed Google Apps Script Web App URL here to also log
   // every RSVP into a Google Sheet. Leave blank to skip that step.
@@ -813,11 +1081,11 @@
     form.style.display = 'none';
     thankYou.style.display = 'block';
     if(attending === 'yes'){
-      thankYouTitle.textContent = 'With gratitude, ' + name.split(' ')[0];
-      thankYouBody.textContent = 'We can\'t wait to celebrate with you on October 17th. Your seat is saved.';
+      thankYouTitle.textContent = 'Terima kasih, ' + name.split(' ')[0];
+      thankYouBody.textContent = 'kerana sudi memeriahkan hari majlis berbahagia kami.';
     } else {
-      thankYouTitle.textContent = 'You will be missed';
-      thankYouBody.textContent = 'Thank you for letting us know, ' + name.split(' ')[0] + '. We\'ll be thinking of you.';
+      thankYouTitle.textContent = 'Terima kasih.' + name.split(' ')[0];
+      thankYouBody.textContent = 'Maklum balas tuan/puan amat dihargai.';
     }
     if(msg){ loadWishes(); }
   });

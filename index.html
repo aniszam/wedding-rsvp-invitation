@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <title>Zarith Sofia &amp; Naufal — RSVP</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Pinyon+Script&family=Tangerine:wght@400;700&family=Tenor+Sans&display=swap');
@@ -504,8 +505,8 @@
     transition:transform .25s ease, filter .25s ease;
   }
   .seal-btn-icon{
-    width:100px;
-    height:100px;
+    width:150px;
+    height:150px;
     object-fit:contain;
     pointer-events:none;
   }
@@ -820,12 +821,12 @@
   </div>
   <div class="carousel" id="carousel">
     <div class="carousel-track" id="carouselTrack">
-      <div class="carousel-slide"><img src="https://picsum.photos/id/1011/900/675" alt="" loading="lazy"></div>
-      <div class="carousel-slide"><img src="https://picsum.photos/id/1043/900/675" alt="" loading="lazy"></div>
-      <div class="carousel-slide"><img src="https://picsum.photos/id/1066/900/675" alt="" loading="lazy"></div>
-      <div class="carousel-slide"><img src="https://picsum.photos/id/1025/900/675" alt="" loading="lazy"></div>
-      <div class="carousel-slide"><img src="https://picsum.photos/id/1074/900/675" alt="" loading="lazy"></div>
-      <div class="carousel-slide"><img src="https://picsum.photos/id/1080/900/675" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="images/1.JPG" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="images/2.JPG" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="images/3.JPG" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="images/4.JPG" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="images/5.JPG" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="images/6.JPG" alt="" loading="lazy"></div>
     </div>
     <button class="carousel-arrow prev" id="carouselPrev" aria-label="Previous photo" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -856,19 +857,35 @@
   </div>
   <div class="contact-grid">
     <div class="contact-card">
-      <div class="contact-role">Bapa Pengantin</div>
-      <div class="contact-name">Zam Azizul</div>
-      <div class="contact-detail">0176958195</div>
+      <div class="contact-role">Abah Pengantin</div>
+    
+      <div class="contact-name">
+        Zam Azizul
+        <a href="https://wa.me/60176958195" target="_blank" aria-label="Chat on WhatsApp">
+          <i class="fa-brands fa-whatsapp" style="color:#25D366; margin-left:8px;"></i>
+        </a>
+      </div>
+      <!-- <div class="contact-detail">0176958195</div> -->
     </div>
     <div class="contact-card">
-      <div class="contact-role">Ibu Pengantin</div>
-      <div class="contact-name">Suriana</div>
-      <div class="contact-detail">0193485479</div>
+      <div class="contact-role">Ummi Pengantin</div>
+      <div class="contact-name">
+        Suriana
+        <a href="https://wa.me/60193485479" target="_blank" aria-label="Chat on WhatsApp">
+          <i class="fa-brands fa-whatsapp" style="color:#25D366; margin-left:8px;"></i>
+        </a>
+      </div>
+      <!-- <div class="contact-detail">0193485479</div> -->
     </div>
     <div class="contact-card">
       <div class="contact-role">Bride</div>
-      <div class="contact-name">Zarith Sofia</div>
-      <div class="contact-detail">0124854083</div>
+      <div class="contact-name">
+        Zarith Sofia
+        <a href="https://wa.me/60124854083" target="_blank" aria-label="Chat on WhatsApp">
+          <i class="fa-brands fa-whatsapp" style="color:#25D366; margin-left:8px;"></i>
+        </a>
+      </div>
+      <!-- <div class="contact-detail">0124854083</div> -->
     </div>
   </div>
 </section>
@@ -916,7 +933,7 @@
       </div>
 
       <button type="submit" class="seal-btn" id="submitBtn">
-        <img src="images/heart-icon.png" alt="" class="seal-btn-icon" />
+        <img src="images/pink-heart.png" alt="" class="seal-btn-icon" />
       </button>
       <div class="form-msg" id="formMsg"></div>
     </form>
@@ -945,13 +962,13 @@
   <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
 </audio>
 
-<div id="adminPanel">
+<!-- <div id="adminPanel">
   <div class="admin-box">
     <h3>All Responses</h3>
     <div class="admin-summary" id="adminSummary">Loading…</div>
     <div id="adminList"></div>
   </div>
-</div>
+</div> -->
 
 <script>
   document.addEventListener('DOMContentLoaded', function(){
@@ -1150,63 +1167,63 @@
   }
 
   // Admin / couple's view
-  const adminToggle = document.getElementById('adminToggle');
-  const adminPanel = document.getElementById('adminPanel');
-  const adminSummary = document.getElementById('adminSummary');
-  const adminList = document.getElementById('adminList');
-  let loaded = false;
+  // const adminToggle = document.getElementById('adminToggle');
+  // const adminPanel = document.getElementById('adminPanel');
+  // const adminSummary = document.getElementById('adminSummary');
+  // const adminList = document.getElementById('adminList');
+  // let loaded = false;
 
-  adminToggle.addEventListener('click', async function(){
-    const showing = adminPanel.classList.toggle('show');
-    if(showing && !loaded){
-      loaded = true;
-      await loadResponses();
-    }
-    if(showing){ adminPanel.scrollIntoView({behavior:'smooth', block:'start'}); }
-  });
+  // adminToggle.addEventListener('click', async function(){
+  //   const showing = adminPanel.classList.toggle('show');
+  //   if(showing && !loaded){
+  //     loaded = true;
+  //     await loadResponses();
+  //   }
+  //   if(showing){ adminPanel.scrollIntoView({behavior:'smooth', block:'start'}); }
+  // });
 
-  async function loadResponses(){
-    adminList.innerHTML = '';
-    adminSummary.textContent = 'Loading…';
+  // async function loadResponses(){
+  //   adminList.innerHTML = '';
+  //   adminSummary.textContent = 'Loading…';
 
-    const entries = await fetchAllRSVPs();
+  //   const entries = await fetchAllRSVPs();
 
-    if(entries.length === 0){
-      adminSummary.textContent = 'No responses yet.';
-      adminList.innerHTML = '<div class="admin-empty">Responses will appear here as guests reply.</div>';
-      return;
-    }
+  //   if(entries.length === 0){
+  //     adminSummary.textContent = 'No responses yet.';
+  //     adminList.innerHTML = '<div class="admin-empty">Responses will appear here as guests reply.</div>';
+  //     return;
+  //   }
 
-    entries.sort((a,b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+  //   entries.sort((a,b) => new Date(b.submittedAt) - new Date(a.submittedAt));
 
-    const attendingCount = entries.filter(e => e.attending === 'yes');
-    const totalPax = attendingCount.reduce((sum,e) => sum + (Number(e.pax)||0), 0);
-    const declineCount = entries.filter(e => e.attending === 'no').length;
+  //   const attendingCount = entries.filter(e => e.attending === 'yes');
+  //   const totalPax = attendingCount.reduce((sum,e) => sum + (Number(e.pax)||0), 0);
+  //   const declineCount = entries.filter(e => e.attending === 'no').length;
 
-    adminSummary.textContent = entries.length + ' response' + (entries.length===1?'':'s') +
-      ' · ' + attendingCount.length + ' accepted (' + totalPax + ' guests) · ' + declineCount + ' declined';
+  //   adminSummary.textContent = entries.length + ' response' + (entries.length===1?'':'s') +
+  //     ' · ' + attendingCount.length + ' accepted (' + totalPax + ' guests) · ' + declineCount + ' declined';
 
-    entries.forEach(e => {
-      const row = document.createElement('div');
-      row.className = 'admin-row';
-      const left = document.createElement('div');
-      left.innerHTML = '<div class="who">' + escapeHtml(e.name) + '</div>' +
-        (e.message ? '<div style="opacity:0.75;font-size:14px;margin-top:2px;">' + escapeHtml(e.message) + '</div>' : '');
-      const right = document.createElement('div');
-      right.className = 'meta';
-      right.style.textAlign = 'right';
-      right.innerHTML = (e.attending === 'yes' ? ('Accepted · ' + e.pax + ' pax') : 'Declined');
-      row.appendChild(left);
-      row.appendChild(right);
-      adminList.appendChild(row);
-    });
-  }
+  //   entries.forEach(e => {
+  //     const row = document.createElement('div');
+  //     row.className = 'admin-row';
+  //     const left = document.createElement('div');
+  //     left.innerHTML = '<div class="who">' + escapeHtml(e.name) + '</div>' +
+  //       (e.message ? '<div style="opacity:0.75;font-size:14px;margin-top:2px;">' + escapeHtml(e.message) + '</div>' : '');
+  //     const right = document.createElement('div');
+  //     right.className = 'meta';
+  //     right.style.textAlign = 'right';
+  //     right.innerHTML = (e.attending === 'yes' ? ('Accepted · ' + e.pax + ' pax') : 'Declined');
+  //     row.appendChild(left);
+  //     row.appendChild(right);
+  //     adminList.appendChild(row);
+  //   });
+  // }
 
-  function escapeHtml(str){
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-  }
+  // function escapeHtml(str){
+  //   const d = document.createElement('div');
+  //   d.textContent = str;
+  //   return d.innerHTML;
+  // }
 
   // Public "well wishes" wall — shows messages guests leave on the RSVP form
   const wishesList = document.getElementById('wishesList');

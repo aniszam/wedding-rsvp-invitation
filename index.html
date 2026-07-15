@@ -38,7 +38,7 @@
     letter-spacing:0.32em;
     text-transform:uppercase;
     font-size:12px;
-    color:var(--gold);
+    color:#896c0b;
   }
 
   h1,h2,h3{
@@ -58,8 +58,8 @@
     text-align:center;
     padding:48px 24px;
     overflow:hidden;
-    background:
-      radial-gradient(ellipse at 50% -10%, var(--ivory-deep), var(--ivory) 60%);
+    /* background: */
+      /* radial-gradient(ellipse at 50% -10%, var(--ivory-deep), var(--ivory) 60%); */
   }
   .hero-frame{
     position:relative;
@@ -213,14 +213,20 @@
     max-width:760px;
     margin:0 auto;
   }
-  .section-head{ text-align:center; margin-bottom:56px; }
-  .section-head h2{ font-size:38px; font-style:italic; margin-top:10px; }
+  .section-head{ text-align:center; margin-bottom:40px; }
+  .section-head h2{ font-size:38px; font-style:italic; margin-top:5px; }
   .flourish{
     width:64px; height:14px; margin:16px auto 0;
     opacity:0.6;
   }
 
   /* ---------- DETAILS (timeline) ---------- */
+  .card-lace {
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    margin: 0 auto;
+  }
   .timeline{
     position:relative;
     padding-left:0;
@@ -564,6 +570,16 @@
   select#paxCount:focus{ border-color:var(--rose); }
 
   /* ---------- COUNTDOWN ---------- */
+  .small-padding {
+    padding: 5px 24px;
+  }
+  .lace {
+    display: block;
+    width: 120%;
+    max-width: none;
+    margin: 0 auto 20px;
+    margin-left: -10%;
+  }
   .countdown-grid{
     display:flex;
     align-items:center;
@@ -663,10 +679,22 @@
   @media (prefers-reduced-motion: reduce){
     *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
   }
+
+  .bg-fixed{
+    position:fixed;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    background-image: url('images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index:-1;
+  }
 </style>
 </head>
 <body>
-
+<div class="bg-fixed"></div>
 <!-- HERO -->
 <div class="hero">
   <div class="corner tl">
@@ -754,8 +782,9 @@
   </p>
 </section>
 
+<img src="images/card-w-contents.png" class="card-lace">
 <!-- DETAILS -->
-<section>
+<!-- <section>
   <div class="section-head">
     <div class="eyebrow">Majlis Resespsi</div>
     <h2>Aturcara Majlis</h2>
@@ -764,28 +793,25 @@
     <li class="t-item">
       <div class="t-time">11:00 AM</div>
       <div class="t-title">Kehadiran tetamu</div>
-      <!-- <div class="t-place">The Olive Terrace, Castello di Vincigliata</div> -->
     </li>
     <li class="t-item">
       <div class="t-time">12:30 PM</div>
       <div class="t-title">Ketibaan Pengantin</div>
-      <!-- <div class="t-place">The Courtyard Garden</div> -->
     </li>
     <li class="t-item">
       <div class="t-time">2:00 PM</div>
       <div class="t-title">Sesi Fotografi</div>
-      <!-- <div class="t-place">The Great Hall</div> -->
     </li>
     <li class="t-item">
       <div class="t-time">3:30 PM</div>
       <div class="t-title">Majlis Bersurai</div>
-      <!-- <div class="t-place">The Great Hall</div> -->
     </li>
   </ul>
-</section>
+</section> -->
 
 <!-- COUNTDOWN -->
-<section id="countdown">
+<section class="small-padding" id="countdown">
+  <img src="images/lace.png" class="lace" alt="">
   <div class="section-head">
     <div class="eyebrow">Menghitung Hari Bagi Meraikan</div>
     <h2>Majlis Bahagia Kami</h2>
@@ -811,6 +837,7 @@
       <div class="cd-label">Saat</div>
     </div>
   </div>
+  <img src="images/lace.png" class="lace" alt="">
 </section>
 
 <!-- GALLERY -->

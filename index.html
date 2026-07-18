@@ -382,11 +382,12 @@
     position:relative;
   } */
   .wish-card {
-  flex: 0 0 auto;
+  /* flex: 0 0 auto;
   width: calc((100% - 2 * 16px) / 3);
+  scroll-snap-align: start; */
   min-width: 220px;
-  scroll-snap-align: start;
   border: 1px solid var(--line);
+  border-radius: 6px;
   padding: 18px 16px;
   background: var(--ivory-deep);
 }
@@ -491,7 +492,7 @@
   font-size: 13px;
   color: var(--green-deep);
   background: transparent;
-  border: 1px solid var(--line);
+  border: 1px solid var(--green);
   padding: 10px 28px;
   border-radius: 30px;
   cursor: pointer;
@@ -499,8 +500,9 @@
 }
 
 .wishes-see-all-btn:hover {
-  border-color: var(--rose);
-  color: var(--rose);
+  border-color: var(--ivory-deep);
+  color: var(--ivory-deep);
+  background-color: var(--rose);
 }
 
 /* --- Modal --- */
@@ -579,8 +581,8 @@
     text-align:center;
   }
   .contact-card{
-    padding:26px 16px;
-    border-top:1px solid var(--line);
+    padding:24px 14px;
+    /* border-top:1px solid var(--line); */
   }
   .contact-role{
     font-family:'Tenor Sans', sans-serif;
@@ -1192,7 +1194,7 @@
   <div class="contact-grid">
     <div class="contact-card">
       <div class="contact-role">Abah Pengantin</div>
-    
+      <div class="underline" style="width: 150px;"></div>
       <div class="contact-name">
         Zam Azizul
         <a href="https://wa.me/60176958195" target="_blank" aria-label="Chat on WhatsApp">
@@ -1203,6 +1205,7 @@
     </div>
     <div class="contact-card">
       <div class="contact-role">Ummi Pengantin</div>
+      <div class="underline" style="width: 170px;"></div>
       <div class="contact-name">
         Suriana
         <a href="https://wa.me/60193485479" target="_blank" aria-label="Chat on WhatsApp">
@@ -1213,6 +1216,7 @@
     </div>
     <div class="contact-card">
       <div class="contact-role">Bride</div>
+      <div class="underline" style="width: 70px;"></div>
       <div class="contact-name">
         Zarith Sofia
         <a href="https://wa.me/60124854083" target="_blank" aria-label="Chat on WhatsApp">
@@ -1543,7 +1547,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   async function loadWishes(){
-    wishesList.innerHTML = '<div class="admin-empty">Memuatkan ucapan...</div>';
+    wishesList.innerHTML = '<div class="admin-empty">Ucapan dari para tetamu.</div>';
 
     const entries = (await fetchAllRSVPs()).filter(e => e.message);
 
@@ -1677,6 +1681,7 @@ document.addEventListener('DOMContentLoaded', function(){
   // Background music toggle
   const musicToggle = document.getElementById('musicToggle');
   const bgMusic = document.getElementById('bgMusic');
+  bgMusic.volume = 0.2;
   let isPlaying = false;
   let autoStarted = false;
 

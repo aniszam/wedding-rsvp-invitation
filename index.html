@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <title>Zarith Sofia &amp; Naufal — RSVP</title>
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Pinyon+Script&family=Tangerine:wght@400;700&family=Tenor+Sans&display=swap');
 
@@ -16,6 +17,7 @@
     --rose: #C48A8A;
     --rose-soft: #E9D6D2;
     --gold: #48320c;
+    --purple:#720760;
     --ink: #3A342C;
     --sage: #F3EDE1;
     --line: rgba(53,69,47,0.25);
@@ -65,8 +67,7 @@
     text-align:center;
     padding:48px 24px;
     overflow:hidden;
-    /* background: */
-      /* radial-gradient(ellipse at 50% -10%, var(--ivory-deep), var(--ivory) 60%); */
+    /* background:radial-gradient(ellipse at 50% -10%, var(--ivory-deep), var(--ivory) 60%); */
   }
   .hero-frame{
     position:relative;
@@ -352,19 +353,44 @@
   .carousel-dots button:focus-visible{ outline:2px solid var(--rose); outline-offset:2px; }
 
   /* ---------- WELL WISHES ---------- */
-  .wishes-grid{
+  /* .wishes-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
     gap:22px;
-  }
-  .wish-card{
+  }*/
+
+.wishes-grid {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 4px 4px 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* hide scrollbar on Firefox */
+}
+
+.wishes-grid::-webkit-scrollbar {
+  display: none; /* hide scrollbar on Chrome/Safari */
+}
+
+  /*.wish-card{
     background:var(--ivory-deep);
     border:1px solid var(--line);
     border-radius:2px;
     padding:24px 22px;
     position:relative;
-  }
-  .wish-card::before{
+  } */
+  .wish-card {
+  flex: 0 0 auto;
+  width: calc((100% - 2 * 16px) / 3);
+  min-width: 220px;
+  scroll-snap-align: start;
+  border: 1px solid var(--line);
+  padding: 18px 16px;
+  background: var(--ivory-deep);
+}
+  /* .wish-card::before{
     content:'"';
     font-family:'Cormorant Garamond', serif;
     font-size:44px;
@@ -373,7 +399,7 @@
     top:2px; left:14px;
     line-height:1;
     opacity:0.7;
-  }
+  } */
   .wish-text{
     font-style:italic;
     color:var(--ink);
@@ -386,8 +412,164 @@
     font-size:12px;
     letter-spacing:0.1em;
     text-transform:uppercase;
-    color:var(--gold);
+    color:var(--purple);
   }
+  /* .wishes-scroll-wrap {
+  position: relative;
+} */
+
+/*.wish-card {
+  flex: 0 0 auto;
+  width: calc((100% - 5 * 16px) / 6);*/ /* 6 visible cards, adjust gap math if PAGE size changes */
+  /*min-width: 220px;*/ /* fallback so cards don't get too squished on smaller screens */
+  /*scroll-snap-align: start;
+  border: 1px solid var(--line);
+  padding: 18px 16px;
+  background:var(--ivory-deep);
+}*/
+
+/* Fade hint on the right edge to suggest more content */
+.wishes-scroll-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 100%;
+  /* background: linear-gradient(to right, transparent, #fdfaf5); */
+  pointer-events: none;
+}
+
+/* Desktop arrows — hidden by default, shown on hover of the wrap */
+.wishes-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--green-deep);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .2s ease, border-color .2s ease, color .2s ease;
+  z-index: 5;
+}
+
+.wishes-scroll-wrap:hover .wishes-arrow {
+  opacity: 1;
+}
+
+.wishes-arrow:hover {
+  border-color: var(--rose);
+  color: var(--rose);
+}
+
+.wishes-arrow-left { left: -6px; }
+.wishes-arrow-right { right: -6px; }
+
+/* Hide arrows on touch devices — swipe is more natural there */
+@media (hover: none) {
+  .wishes-arrow { display: none; }
+}
+
+@media (max-width: 768px) {
+  .wish-card { width: 78%; } /* show ~1.3 cards on mobile, hints at scrollability */
+}
+
+/* --- See all button --- */
+.wishes-see-all-wrap {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.wishes-see-all-btn {
+  font-family: 'Tenor Sans', sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: var(--green-deep);
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 10px 28px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease;
+}
+
+.wishes-see-all-btn:hover {
+  border-color: var(--rose);
+  color: var(--rose);
+}
+
+/* --- Modal --- */
+.wishes-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.wishes-modal-overlay.show {
+  display: flex;
+}
+
+.wishes-modal {
+  position: relative;
+  background: #fdfaf5;
+  max-width: 900px;
+  width: 100%;
+  padding: 40px 32px;
+  border-radius: 4px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.wishes-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--green-deep);
+  cursor: pointer;
+  transition: color .2s ease;
+}
+
+.wishes-modal-close:hover {
+  color: var(--rose);
+}
+
+.wishes-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.wishes-modal-grid .wish-card {
+  width: auto;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .wishes-modal-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .wishes-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
 
   /* ---------- CONTACT ---------- */
   .contact-grid{
@@ -576,6 +758,85 @@
   }
   select#paxCount:focus{ border-color:var(--rose); }
 
+  .custom-select {
+  position: relative;
+  width: 100%;
+  font-family: 'EB Garamond', serif;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  font-family: 'EB Garamond', serif;
+  font-size: 18px;
+  color: var(--ink);
+  padding: 8px 2px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color .25s ease;
+}
+
+.custom-select-trigger[aria-expanded="true"],
+.custom-select-trigger:focus {
+  border-color: var(--rose);
+}
+
+.custom-select-trigger.placeholder {
+  color: #999;
+}
+
+.custom-select-trigger svg {
+  stroke: var(--green-deep);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.custom-select-trigger[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.custom-select-options {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background:var(--ivory);
+  border: 1px solid var(--line);
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 20;
+  display: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.custom-select-options.show {
+  display: block;
+}
+
+.custom-select-options li {
+  padding: 10px 14px;
+  font-family: 'EB Garamond', serif;
+  font-size: 17px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease;
+}
+
+.custom-select-options li:hover,
+.custom-select-options li.active {
+  background: var(--rose);
+  color: white;
+}
+
   /* ---------- COUNTDOWN ---------- */
   .small-padding {
     padding: 5px 24px;
@@ -692,7 +953,7 @@
     top:0; left:0;
     width:100%;
     height:100%;
-    background-image: url('images/background.jpg');
+    background-image: url('assets/background.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -759,16 +1020,27 @@
 <section class="invite" id="invitation">
   <p class="invite-occasion"> Kami, </p>
   <div class="invite-parents">
-    <h4>Zam Azizul &amp; Suriana</h4>
+    <h4>Zam Azizul Abd Malek<br> &amp; <br>Suriana Sulaiman</h4>
   </div>
   <p class="invite-lead">dengan penuh rasa kesyukuran menjemput<br>Dato' / Datin / Tuan / Puan / Encik / Puan</p>
   <p class="invite-occasion">dan seisi keluarga hadir ke majlis perkahwinan puteri kami dan pilihan hatinya</p>
   <br>
-  <p class="invite-couple">Zarith Sofia <span class="amp">&amp;</span> Naufal</p>
+  <p class="invite-couple">N.A. Zarith Sofia<br><span class="amp">&amp;</span><br>M. Naufal</p>
   <div class="invite-meta">
     <div class="invite-meta-item">
       <span class="invite-meta-label">Tempat</span>
       <span class="invite-meta-value">Abedeen Clubhouse, Cyberjaya</span>
+      <div style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%;">
+        <a href="https://waze.com/ul?q=Abedeen%20Clubhouse%20Cyberjaya&navigate=yes" target="_blank" aria-label="Navigate with Waze">
+          <img src="assets/waze.png" alt="Waze" style="width:30px; height:30px;">
+        </a>
+        <a href="https://www.google.com/maps/search/?api=1&query=Abedeen%20Clubhouse%20Cyberjaya" target="_blank" aria-label="Navigate with Google Maps">
+          <img src="assets/google.png" alt="Google Maps" style="width:30px; height:30px;">
+        </a>
+        <a href="https://maps.apple.com/?q=Abedeen%20Clubhouse%20Cyberjaya" target="_blank" aria-label="Navigate with Apple Maps">
+          <img src="assets/apple.png" alt="Apple Maps" style="width:30px; height:30px;">
+        </a>
+      </div>
     </div>
     <div class="invite-meta-item">
       <span class="invite-meta-label">Tarikh</span>
@@ -789,7 +1061,7 @@
   </p>
 </section>
 
-<img src="images/card-w-contents.png" class="card-lace">
+<img src="assets/card-w-contents.png" class="card-lace">
 <!-- DETAILS -->
 <!-- <section>
   <div class="section-head">
@@ -818,7 +1090,7 @@
 
 <!-- COUNTDOWN -->
 <section class="small-padding" id="countdown">
-  <img src="images/lace.png" class="lace" alt="">
+  <img src="assets/lace.png" class="lace" alt="">
   <div class="section-head">
     <div class="eyebrow">Meraikan Majlis Bahagia Kami</div>
     <div class="underline" style="width: 420px;"></div>
@@ -845,7 +1117,7 @@
       <div class="cd-label">Saat</div>
     </div>
   </div>
-  <img src="images/lace.png" class="lace" alt="">
+  <img src="assets/lace.png" class="lace" alt="">
 </section>
 
 <!-- GALLERY -->
@@ -857,12 +1129,12 @@
   </div>
   <div class="carousel" id="carousel">
     <div class="carousel-track" id="carouselTrack">
-      <div class="carousel-slide"><img src="images/1.JPG" alt="" loading="lazy"></div>
-      <div class="carousel-slide"><img src="images/2.JPG" alt="" loading="lazy"></div>
-      <div class="carousel-slide"><img src="images/3.JPG" alt="" loading="lazy"></div>
-      <div class="carousel-slide"><img src="images/4.JPG" alt="" loading="lazy"></div>
-      <div class="carousel-slide"><img src="images/5.JPG" alt="" loading="lazy"></div>
-      <div class="carousel-slide"><img src="images/6.JPG" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="assets/1.JPG" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="assets/2.JPG" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="assets/3.JPG" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="assets/4.JPG" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="assets/5.JPG" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="assets/6.JPG" alt="" loading="lazy"></div>
     </div>
     <button class="carousel-arrow prev" id="carouselPrev" aria-label="Previous photo" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -881,10 +1153,34 @@
     <div class="underline" style="width: 250px;"></div>
     <h2>Ucapan</h2>
   </div>
-  <div id="wishesList" class="wishes-grid">
+  <!-- <div id="wishesList" class="wishes-grid">
     <div class="admin-empty">Tinggalkan mesej di ruangan RSVP.</div>
+  </div> -->
+  <div class="wishes-scroll-wrap">
+    <div id="wishesList" class="wishes-grid">
+      <div class="admin-empty">Tinggalkan mesej di ruangan RSVP.</div>
+    </div>
+    <button type="button" class="wishes-arrow wishes-arrow-left" id="wishesArrowLeft" aria-label="Scroll left">&larr;</button>
+    <button type="button" class="wishes-arrow wishes-arrow-right" id="wishesArrowRight" aria-label="Scroll right">&rarr;</button>
+  </div>
+
+  <div class="wishes-see-all-wrap">
+    <button type="button" id="wishesSeeAllBtn" class="wishes-see-all-btn">Lihat semua</button>
   </div>
 </section>
+
+<!-- Modal -->
+<div class="wishes-modal-overlay" id="wishesModalOverlay">
+  <div class="wishes-modal">
+    <button type="button" class="wishes-modal-close" id="wishesModalClose" aria-label="Close">&times;</button>
+    <div class="section-head" style="margin-bottom:24px;">
+      <div class="eyebrow">Daripada Tetamu</div>
+      <div class="underline" style="width: 250px;"></div>
+      <h2>Semua Ucapan</h2>
+    </div>
+    <div id="wishesModalGrid" class="wishes-modal-grid"></div>
+  </div>
+</div>
 
 <!-- CONTACT -->
 <section id="contact">
@@ -953,17 +1249,32 @@
         </div>
       </div>
 
-      <div class="field" id="paxField">
+      <!-- <div class="field" id="paxField">
         <label for="paxCount">Bilangan tetamu</label>
         <select id="paxCount">
-          <option value="">Sila pilih</option>
+          <option for="paxCount" value="">Sila pilih</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
         </select>
+      </div> -->
+
+      <div class="field" id="paxField">
+        <label for="paxCount">Bilangan tetamu</label>
+        <div class="custom-select" id="paxSelect">
+          <button type="button" class="custom-select-trigger" id="paxTrigger" aria-haspopup="listbox" aria-expanded="false">
+            <span id="paxTriggerText">Sila pilih</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <ul class="custom-select-options" id="paxOptions" role="listbox" tabindex="-1">
+            <li role="option" data-value="1">1</li>
+            <li role="option" data-value="2">2</li>
+            <li role="option" data-value="3">3</li>
+          </ul>
+          <input type="hidden" id="paxCount" name="paxCount" required>
+        </div>
       </div>
 
       <div class="field">
@@ -972,7 +1283,7 @@
       </div>
 
       <button type="submit" class="seal-btn" id="submitBtn">
-        <img src="images/pink-heart.png" alt="" class="seal-btn-icon" />
+        <img src="assets/pink-heart.png" alt="" class="seal-btn-icon" />
       </button>
       <div class="form-msg" id="formMsg"></div>
     </form>
@@ -999,7 +1310,7 @@
   </svg>
 </button>
 <audio id="bgMusic" loop preload="none">
-  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+  <source src="assets/termenung.mp3" type="audio/mpeg">
 </audio>
 
 <!-- <div id="adminPanel">
@@ -1011,7 +1322,7 @@
 </div> -->
 
 <script>
-  document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', function(){
     const WEDDING_DATE = new Date('2026-10-17T15:30:00');
 
     const elDays = document.getElementById('cdDays');
@@ -1206,84 +1517,80 @@
     return [];
   }
 
-  // Admin / couple's view
-  // const adminToggle = document.getElementById('adminToggle');
-  // const adminPanel = document.getElementById('adminPanel');
-  // const adminSummary = document.getElementById('adminSummary');
-  // const adminList = document.getElementById('adminList');
-  // let loaded = false;
-
-  // adminToggle.addEventListener('click', async function(){
-  //   const showing = adminPanel.classList.toggle('show');
-  //   if(showing && !loaded){
-  //     loaded = true;
-  //     await loadResponses();
-  //   }
-  //   if(showing){ adminPanel.scrollIntoView({behavior:'smooth', block:'start'}); }
-  // });
-
-  // async function loadResponses(){
-  //   adminList.innerHTML = '';
-  //   adminSummary.textContent = 'Loading…';
-
-  //   const entries = await fetchAllRSVPs();
-
-  //   if(entries.length === 0){
-  //     adminSummary.textContent = 'No responses yet.';
-  //     adminList.innerHTML = '<div class="admin-empty">Responses will appear here as guests reply.</div>';
-  //     return;
-  //   }
-
-  //   entries.sort((a,b) => new Date(b.submittedAt) - new Date(a.submittedAt));
-
-  //   const attendingCount = entries.filter(e => e.attending === 'yes');
-  //   const totalPax = attendingCount.reduce((sum,e) => sum + (Number(e.pax)||0), 0);
-  //   const declineCount = entries.filter(e => e.attending === 'no').length;
-
-  //   adminSummary.textContent = entries.length + ' response' + (entries.length===1?'':'s') +
-  //     ' · ' + attendingCount.length + ' accepted (' + totalPax + ' guests) · ' + declineCount + ' declined';
-
-  //   entries.forEach(e => {
-  //     const row = document.createElement('div');
-  //     row.className = 'admin-row';
-  //     const left = document.createElement('div');
-  //     left.innerHTML = '<div class="who">' + escapeHtml(e.name) + '</div>' +
-  //       (e.message ? '<div style="opacity:0.75;font-size:14px;margin-top:2px;">' + escapeHtml(e.message) + '</div>' : '');
-  //     const right = document.createElement('div');
-  //     right.className = 'meta';
-  //     right.style.textAlign = 'right';
-  //     right.innerHTML = (e.attending === 'yes' ? ('Accepted · ' + e.pax + ' pax') : 'Declined');
-  //     row.appendChild(left);
-  //     row.appendChild(right);
-  //     adminList.appendChild(row);
-  //   });
-  // }
-
   function escapeHtml(str){
     const d = document.createElement('div');
     d.textContent = str;
     return d.innerHTML;
   }
 
-  // Public "well wishes" wall — shows messages guests leave on the RSVP form
+  // --- Well wishes: compact scrollable strip + "Lihat semua" modal ---
   const wishesList = document.getElementById('wishesList');
+  const wishesArrowLeft = document.getElementById('wishesArrowLeft');
+  const wishesArrowRight = document.getElementById('wishesArrowRight');
+  const wishesSeeAllBtn = document.getElementById('wishesSeeAllBtn');
+  const wishesModalOverlay = document.getElementById('wishesModalOverlay');
+  const wishesModalClose = document.getElementById('wishesModalClose');
+  const wishesModalGrid = document.getElementById('wishesModalGrid');
+
+  let allWishEntries = [];
+
+  function buildWishCard(e){
+    const card = document.createElement('div');
+    card.className = 'wish-card';
+    card.innerHTML = '<div class="wish-text">' + escapeHtml(e.message) + '</div>' +
+      '<div class="wish-name">' + escapeHtml(e.name) + '</div>';
+    return card;
+  }
 
   async function loadWishes(){
+    wishesList.innerHTML = '<div class="admin-empty">Memuatkan ucapan...</div>';
+
     const entries = (await fetchAllRSVPs()).filter(e => e.message);
-    if(entries.length === 0){ return; }
+
+    if(entries.length === 0){
+      wishesList.innerHTML = '<div class="admin-empty">Tinggalkan mesej di ruangan RSVP.</div>';
+      return;
+    }
 
     entries.sort((a,b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+    allWishEntries = entries;
 
     wishesList.innerHTML = '';
-    entries.slice(0, 12).forEach(e => {
-      const card = document.createElement('div');
-      card.className = 'wish-card';
-      card.innerHTML = '<div class="wish-text">' + escapeHtml(e.message) + '</div>' +
-        '<div class="wish-name">' + escapeHtml(e.name) + '</div>';
-      wishesList.appendChild(card);
-    });
+    entries.forEach(e => wishesList.appendChild(buildWishCard(e)));
   }
   loadWishes();
+
+  function scrollWishes(direction){
+    const card = wishesList.querySelector('.wish-card');
+    if(!card) return;
+    const cardWidth = card.getBoundingClientRect().width + 16;
+    wishesList.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+  }
+  wishesArrowLeft.addEventListener('click', () => scrollWishes(-1));
+  wishesArrowRight.addEventListener('click', () => scrollWishes(1));
+
+  function openWishesModal(){
+    wishesModalGrid.innerHTML = '';
+    allWishEntries.forEach(e => wishesModalGrid.appendChild(buildWishCard(e)));
+    wishesModalOverlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeWishesModal(){
+    wishesModalOverlay.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  wishesSeeAllBtn.addEventListener('click', openWishesModal);
+  wishesModalClose.addEventListener('click', closeWishesModal);
+  wishesModalOverlay.addEventListener('click', function(e){
+    if(e.target === wishesModalOverlay){ closeWishesModal(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && wishesModalOverlay.classList.contains('show')){
+      closeWishesModal();
+    }
+  });
 
   // Gallery carousel: autoplay every 3s, arrows, dots, swipe/drag
   const carousel = document.getElementById('carousel');
@@ -1371,24 +1678,94 @@
   const musicToggle = document.getElementById('musicToggle');
   const bgMusic = document.getElementById('bgMusic');
   let isPlaying = false;
+  let autoStarted = false;
 
-  musicToggle.addEventListener('click', function(){
-    if(isPlaying){
-      bgMusic.pause();
-      musicToggle.classList.remove('playing');
-      musicToggle.setAttribute('aria-pressed', 'false');
-      musicToggle.setAttribute('aria-label', 'Play background music');
-    } else {
-      bgMusic.play().catch(() => {
-        formMsg && null; // no-op; playback can fail silently if the source is unavailable
-      });
+  function playMusic(){
+    bgMusic.play().then(() => {
       musicToggle.classList.add('playing');
       musicToggle.setAttribute('aria-pressed', 'true');
       musicToggle.setAttribute('aria-label', 'Pause background music');
-    }
-    isPlaying = !isPlaying;
+      isPlaying = true;
+    }).catch(() => {
+      // playback blocked or source unavailable; user can still use the manual toggle
+    });
+  }
+
+  function pauseMusic(){
+    bgMusic.pause();
+    musicToggle.classList.remove('playing');
+    musicToggle.setAttribute('aria-pressed', 'false');
+    musicToggle.setAttribute('aria-label', 'Play background music');
+    isPlaying = false;
+  }
+
+  musicToggle.addEventListener('click', function(){
+    autoStarted = true;
+    isPlaying ? pauseMusic() : playMusic();
   });
+
+  function autoStartOnce(e){
+    if(autoStarted || e.target === musicToggle){ return; }
+    autoStarted = true;
+    playMusic();
+    document.removeEventListener('click', autoStartOnce);
+    document.removeEventListener('touchstart', autoStartOnce);
+    document.removeEventListener('keydown', autoStartOnce);
+  }
+
+  document.addEventListener('click', autoStartOnce);
+  document.addEventListener('touchstart', autoStartOnce);
+  document.addEventListener('keydown', autoStartOnce);
 })();
+
+  const trigger = document.getElementById('paxTrigger');
+  const triggerText = document.getElementById('paxTriggerText');
+  const optionsList = document.getElementById('paxOptions');
+  const hiddenInput = document.getElementById('paxCount');
+  const options = Array.from(optionsList.children);
+
+  function closeDropdown(){
+    optionsList.classList.remove('show');
+    trigger.setAttribute('aria-expanded', 'false');
+  }
+
+  function openDropdown(){
+    optionsList.classList.add('show');
+    trigger.setAttribute('aria-expanded', 'true');
+  }
+
+  trigger.addEventListener('click', function(e){
+    e.stopPropagation();
+    optionsList.classList.contains('show') ? closeDropdown() : openDropdown();
+  });
+
+  trigger.classList.add('placeholder');
+
+  options.forEach(opt => {
+    opt.addEventListener('click', function(){
+      options.forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      triggerText.textContent = opt.dataset.value;
+      trigger.classList.remove('placeholder');
+      hiddenInput.value = opt.dataset.value;
+      hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+      closeDropdown();
+    });
+  });
+
+  document.addEventListener('click', function(e){
+    if(!document.getElementById('paxSelect').contains(e.target)){
+      closeDropdown();
+    }
+  });
+
+  trigger.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      optionsList.classList.contains('show') ? closeDropdown() : openDropdown();
+    }
+    if(e.key === 'Escape'){ closeDropdown(); }
+  });
 </script>
 
 </body>

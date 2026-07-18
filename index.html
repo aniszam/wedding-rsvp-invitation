@@ -15,9 +15,9 @@
     --green-deep: #24301F;
     --rose: #C48A8A;
     --rose-soft: #E9D6D2;
-    --gold: #AD8A4E;
+    --gold: #48320c;
     --ink: #3A342C;
-    --sage: #E7EAE0;
+    --sage: #F3EDE1;
     --line: rgba(53,69,47,0.25);
   }
 
@@ -37,8 +37,15 @@
     font-family:'Tenor Sans', sans-serif;
     letter-spacing:0.32em;
     text-transform:uppercase;
-    font-size:12px;
-    color:#896c0b;
+    font-size:14px;
+    color:#4f0410;
+  }
+
+  .underline {
+    width: 200px;
+    height: 0.7px;
+    background-color: #4f0410;
+    margin: 8px auto;
   }
 
   h1,h2,h3{
@@ -223,7 +230,7 @@
   /* ---------- DETAILS (timeline) ---------- */
   .card-lace {
     display: block;
-    width: 80%;
+    width: 90%;
     max-width: 700px;
     margin: 0 auto;
   }
@@ -596,7 +603,7 @@
   .cd-number{
     font-family:'Cormorant Garamond', serif;
     font-style:italic;
-    font-size:52px;
+    font-size:55px;
     line-height:1;
     color:var(--green-deep);
   }
@@ -777,8 +784,8 @@
 <!-- STORY -->
 <section>
   <p class="story">
-    "Two souls, one thread — woven quietly over years of ordinary days,<br class="story-br">
-    until one morning it became impossible to imagine one without the other."
+    "And among His signs is that He created for you spouses from among yourselves so that you may find tranquility in them; and He placed between you affection and mercy."<br class="story-br">
+    — Surah Ar-Rum (30:21)
   </p>
 </section>
 
@@ -813,8 +820,9 @@
 <section class="small-padding" id="countdown">
   <img src="images/lace.png" class="lace" alt="">
   <div class="section-head">
-    <div class="eyebrow">Menghitung Hari Bagi Meraikan</div>
-    <h2>Majlis Bahagia Kami</h2>
+    <div class="eyebrow">Meraikan Majlis Bahagia Kami</div>
+    <div class="underline" style="width: 420px;"></div>
+    <h2>Kiraan Detik</h2>
   </div>
   <div class="countdown-grid" id="countdownGrid">
     <div class="cd-unit">
@@ -844,6 +852,7 @@
 <section id="gallery">
   <div class="section-head">
     <div class="eyebrow">Kenangan</div>
+    <div class="underline" style="width: 140px;"></div>
     <h2>Galeri</h2>
   </div>
   <div class="carousel" id="carousel">
@@ -869,6 +878,7 @@
 <section id="wishes">
   <div class="section-head">
     <div class="eyebrow">Daripada Tetamu</div>
+    <div class="underline" style="width: 250px;"></div>
     <h2>Ucapan</h2>
   </div>
   <div id="wishesList" class="wishes-grid">
@@ -880,6 +890,7 @@
 <section id="contact">
   <div class="section-head">
     <div class="eyebrow">Ahli Majlis</div>
+    <div class="underline" style="width: 200px;"></div>
     <h2>Hubungi</h2>
   </div>
   <div class="contact-grid">
@@ -921,6 +932,7 @@
 <section id="rsvp">
   <div class="section-head">
     <div class="eyebrow">Mohon maklum balas</div>
+    <div class="underline" style="width: 300px;"></div>
     <h2>RSVP</h2>
   </div>
 
@@ -975,6 +987,7 @@
 <footer>
   <div class="monogram">ZS &amp; N</div>
   <div>#NauFallForZarith &nbsp;·&nbsp; 7 NOVEMBER, 2026</div>
+  <div>Truly made by Zarith Sofia</div>
   <!-- <button class="admin-link" id="adminToggle">couple's view</button> -->
 </footer>
 
@@ -1125,11 +1138,11 @@
     form.style.display = 'none';
     thankYou.style.display = 'block';
     if(attending === 'yes'){
-      thankYouTitle.textContent = 'Terima kasih, ' + name.split(' ')[0];
-      thankYouBody.textContent = 'kerana sudi memeriahkan hari majlis berbahagia kami.';
+      thankYouTitle.textContent = 'Terima kasih, ' + name.split(' ')[0] + ' atas RSVP anda.';
+      thankYouBody.textContent = 'Kami amat menghargai kesudian anda untuk bersama-sama meraikan hari bahagia kami 🤍';
     } else {
-      thankYouTitle.textContent = 'Terima kasih.' + name.split(' ')[0];
-      thankYouBody.textContent = 'Maklum balas tuan/puan amat dihargai.';
+      thankYouTitle.textContent = 'Terima kasih, ' + name.split(' ')[0] +' atas maklum balas anda.';
+      thankYouBody.textContent = 'Walaupun tidak dapat hadir, doa dan ucapan anda tetap bermakna buat kami 🤍';
     }
     if(msg){ loadWishes(); }
   });

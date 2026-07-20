@@ -24,9 +24,11 @@
   }
 
   *{ box-sizing:border-box; }
-  html{ scroll-behavior:smooth; }
+  html{ scroll-behavior:smooth; overflow-x:hidden; }
   body{
     margin:0;
+    max-width:100vw;
+    overflow-x:hidden;
     background:var(--ivory);
     color:var(--ink);
     font-family:'EB Garamond', serif;
@@ -98,6 +100,11 @@
     animation:fadeUp 1s ease forwards;
     animation-delay:0.3s;
   }
+  .hero .names .fit-line{
+    display:inline-block;
+    max-width:100%;
+    white-space:nowrap;
+  }
   .amp{ color:var(--rose); font-size:0.75em; padding:0 8px; }
   .hero .sub{
     font-family:'EB Garamond', serif;
@@ -115,8 +122,17 @@
     font-size:15px;
     color:var(--green-deep);
     opacity:0;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
+    row-gap:4px;
     animation:fadeUp 1s ease forwards;
     animation-delay:0.65s;
+  }
+  @media (max-width:620px){
+    .hero .date{ flex-direction:column; }
+    .hero .date .date-sep{ display:none; }
   }
   .divider{
     width:1px; height:34px; background:var(--line);
@@ -231,7 +247,7 @@
   /* ---------- DETAILS (timeline) ---------- */
   .card-lace {
     display: block;
-    width: 90%;
+    width: 98%;
     max-width: 700px;
     margin: 0 auto;
   }
@@ -961,6 +977,31 @@
     background-repeat: no-repeat;
     z-index:-1;
   }
+
+  .card-location {
+    display: block;
+    width: 90%;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .route-box{
+    display:inline-flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    width:100px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:6px 4px;
+  }
+  .route-box span{
+    font-family:'Tenor Sans', sans-serif;
+    font-size:11px;
+    letter-spacing:0.04em;
+    color:var(--ink);
+    white-space:nowrap;
+  }
 </style>
 </head>
 <body>
@@ -1010,10 +1051,10 @@
 
   <div class="hero-frame">
     <div class="eyebrow">Majlis Raikan Cinta</div>
-    <h1 class="names">Zarith Sofia <span class="amp">&amp;</span> <br> Naufal</h1> <br>
+    <h1 class="names"><span class="fit-line">Zarith Sofia <br><span class="amp">&amp;</span></span><br><span class="fit-line">Naufal</span></h1> <br>
     <div class="sub">membina ikatan cinta, keluarga yang dirahmati dan diberkati olehNya.</div>
     <div class="divider"></div>
-    <div class="date">7 NOVEMBER, 2026 · ABEDEEN CLUBHOUSE, CYBERJAYA</div>
+    <div class="date"><span class="date-day">7 NOVEMBER, 2026</span><span class="date-sep"> &middot; </span><span class="date-venue">ABEDEEN CLUBHOUSE, CYBERJAYA</span></div>
   </div>
   <div class="scroll-cue">Borang RSVP di bawah</div>
 </div>
@@ -1053,6 +1094,7 @@
 </section>
 
 <img src="assets/card-w-contents.png" class="card-lace">
+<br><br>
 <!-- DETAILS -->
 <!-- <section>
   <div class="section-head">
@@ -1137,46 +1179,10 @@
   <div class="carousel-dots" id="carouselDots"></div>
 </section>
 
-<!-- WELL WISHES -->
-<section id="wishes">
-  <div class="section-head">
-    <div class="eyebrow">Daripada Tetamu</div>
-    <div class="underline" style="width: 250px;"></div>
-    <h2>Ucapan</h2>
-  </div>
-  <!-- <div id="wishesList" class="wishes-grid">
-    <div class="admin-empty">Tinggalkan mesej di ruangan RSVP.</div>
-  </div> -->
-  <div class="wishes-scroll-wrap">
-    <div id="wishesList" class="wishes-grid">
-      <div class="admin-empty">Tinggalkan mesej di ruangan RSVP.</div>
-    </div>
-    <button type="button" class="wishes-arrow wishes-arrow-left" id="wishesArrowLeft" aria-label="Scroll left">&larr;</button>
-    <button type="button" class="wishes-arrow wishes-arrow-right" id="wishesArrowRight" aria-label="Scroll right">&rarr;</button>
-  </div>
-
-  <div class="wishes-see-all-wrap">
-    <button type="button" id="wishesSeeAllBtn" class="wishes-see-all-btn">Lihat semua</button>
-  </div>
-</section>
-
-<!-- Modal -->
-<div class="wishes-modal-overlay" id="wishesModalOverlay">
-  <div class="wishes-modal">
-    <button type="button" class="wishes-modal-close" id="wishesModalClose" aria-label="Close">&times;</button>
-    <div class="section-head" style="margin-bottom:24px;">
-      <div class="eyebrow">Daripada Tetamu</div>
-      <div class="underline" style="width: 250px;"></div>
-      <h2>Semua Ucapan</h2>
-    </div>
-    <div id="wishesModalGrid" class="wishes-modal-grid"></div>
-  </div>
-</div>
-
 <!-- CONTACT -->
 <section id="contact">
   <div class="section-head">
-    <div class="eyebrow">Urusan Majlis</div>
+    <div class="eyebrow">Ahli Majlis</div>
     <div class="underline" style="width: 200px;"></div>
     <h2>Hubungi</h2>
   </div>
@@ -1219,23 +1225,33 @@
     </div>
   </div>
 
-  <div class="section-head">
+  <!-- <div class="section-head">
     <h2>Lokasi</h2>
-  </div>
-  <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; width:100%; border:1px solid var(--line); border-radius:8px; padding:16px 20px;">
-    <h2 style="margin:0;">Abedeen Clubhouse, Cyberjaya</h2>
-    <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
-      <a href="https://waze.com/ul?q=Abedeen%20Clubhouse%20Cyberjaya&navigate=yes" target="_blank" aria-label="Navigate with Waze" style="display:inline-flex; border:1px solid var(--line); border-radius:6px; padding:4px;">
-        <img src="assets/waze.png" alt="Waze" style="width:40px; height:40px; display:block;">
+  </div> -->
+  <br><br>
+  <img src="assets/location.png" class="card-location">
+  <!-- <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; width:100%; border:1px solid var(--line); border-radius:8px; padding:16px 20px;"> -->
+    <br><br>
+    <div class="section-head">
+      <div class="eyebrow">Panduan ke Lokasi</div>
+      <div class="underline" style="width: 300px;"></div>
+      <h2>Rujukan</h2>
+    </div>
+    <div style="display:flex; align-items:stretch; justify-content:center; gap:8px;">
+      <a href="https://waze.com/ul?q=Abedeen%20Clubhouse%20Cyberjaya&navigate=yes" target="_blank" aria-label="Navigate with Waze" class="route-box">
+        <img src="assets/waze.png" alt="Waze" style="width:50px; height:50px; display:block;">
+        <span>Waze</span>
       </a>
-      <a href="https://www.google.com/maps/search/?api=1&query=Abedeen%20Clubhouse%20Cyberjaya" target="_blank" aria-label="Navigate with Google Maps" style="display:inline-flex; border:1px solid var(--line); border-radius:6px; padding:4px;">
-        <img src="assets/google.png" alt="Google Maps" style="width:40px; height:40px; display:block;">
+      <a href="https://www.google.com/maps/search/?api=1&query=Abedeen%20Clubhouse%20Cyberjaya" target="_blank" aria-label="Navigate with Google Maps" class="route-box">
+        <img src="assets/google.png" alt="Google Maps" style="width:50px; height:50px; display:block;">
+        <span>Google Maps</span>
       </a>
-      <a href="https://maps.apple.com/?q=Abedeen%20Clubhouse%20Cyberjaya" target="_blank" aria-label="Navigate with Apple Maps" style="display:inline-flex; border:1px solid var(--line); border-radius:6px; padding:4px;">
-        <img src="assets/apple.png" alt="Apple Maps" style="width:40px; height:40px; display:block;">
+      <a href="https://maps.apple.com/?q=Abedeen%20Clubhouse%20Cyberjaya" target="_blank" aria-label="Navigate with Apple Maps" class="route-box">
+        <img src="assets/apple.png" alt="Apple Maps" style="width:50px; height:50px; display:block;">
+        <span>Apple Maps</span>
       </a>
     </div>
-</div>
+<!-- </div> -->
 </section>
 
 
@@ -1310,6 +1326,42 @@
   </div>
 </section>
 
+<!-- WELL WISHES -->
+<section id="wishes">
+  <div class="section-head">
+    <div class="eyebrow">Daripada Tetamu</div>
+    <div class="underline" style="width: 250px;"></div>
+    <h2>Ucapan</h2>
+  </div>
+  <!-- <div id="wishesList" class="wishes-grid">
+    <div class="admin-empty">Tinggalkan mesej di ruangan RSVP.</div>
+  </div> -->
+  <div class="wishes-scroll-wrap">
+    <div id="wishesList" class="wishes-grid">
+      <div class="admin-empty">Tinggalkan mesej di ruangan RSVP.</div>
+    </div>
+    <button type="button" class="wishes-arrow wishes-arrow-left" id="wishesArrowLeft" aria-label="Scroll left">&larr;</button>
+    <button type="button" class="wishes-arrow wishes-arrow-right" id="wishesArrowRight" aria-label="Scroll right">&rarr;</button>
+  </div>
+
+  <div class="wishes-see-all-wrap">
+    <button type="button" id="wishesSeeAllBtn" class="wishes-see-all-btn">Lihat semua</button>
+  </div>
+</section>
+
+<!-- Modal -->
+<div class="wishes-modal-overlay" id="wishesModalOverlay">
+  <div class="wishes-modal">
+    <button type="button" class="wishes-modal-close" id="wishesModalClose" aria-label="Close">&times;</button>
+    <div class="section-head" style="margin-bottom:24px;">
+      <div class="eyebrow">Daripada Tetamu</div>
+      <div class="underline" style="width: 250px;"></div>
+      <h2>Semua Ucapan</h2>
+    </div>
+    <div id="wishesModalGrid" class="wishes-modal-grid"></div>
+  </div>
+</div>
+
 <footer>
   <div class="monogram">ZS &amp; N</div>
   <div>#NauFallForZarith &nbsp;·&nbsp; 7 NOVEMBER, 2026</div>
@@ -1376,6 +1428,28 @@ document.addEventListener('DOMContentLoaded', function(){
     update();
     setInterval(update, 1000);
   });
+
+(function(){
+  function fitHeroNames(){
+    document.querySelectorAll('.names').forEach(function(namesEl){
+      namesEl.style.fontSize = '';
+      var minRatio = 1;
+      namesEl.querySelectorAll('.fit-line').forEach(function(el){
+        var ratio = el.clientWidth / el.scrollWidth;
+        if (ratio < minRatio) minRatio = ratio;
+      });
+      if (minRatio < 1) {
+        var base = parseFloat(getComputedStyle(namesEl).fontSize);
+        namesEl.style.fontSize = (base * minRatio * 0.97) + 'px';
+      }
+    });
+  }
+  window.addEventListener('load', fitHeroNames);
+  window.addEventListener('resize', fitHeroNames);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(fitHeroNames);
+  }
+})();
 
 (function(){
   // Paste your deployed Google Apps Script Web App URL here to also log

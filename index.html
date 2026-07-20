@@ -38,11 +38,19 @@
   }
 
   .eyebrow{
+    display:inline-block;
+    max-width:100%;
     font-family:'Tenor Sans', sans-serif;
     letter-spacing:0.32em;
     text-transform:uppercase;
     font-size:14px;
     color:#4f0410;
+  }
+
+  .fit-line{
+    display:inline-block;
+    max-width:100%;
+    white-space:nowrap;
   }
 
   .underline {
@@ -994,7 +1002,9 @@
     border:1px solid var(--line);
     border-radius:6px;
     padding:6px 4px;
+    text-decoration:none;
   }
+  .route-box:visited{ color:inherit; }
   .route-box span{
     font-family:'Tenor Sans', sans-serif;
     font-size:11px;
@@ -1065,7 +1075,7 @@
   <div class="invite-parents">
     <h4>Zam Azizul Abd Malek<br> &amp; <br>Suriana Sulaiman</h4>
   </div>
-  <p class="invite-lead">dengan penuh rasa kesyukuran menjemput<br>Dato' / Datin / Tuan / Puan / Encik / Puan</p>
+  <p class="invite-lead">dengan penuh rasa kesyukuran menjemput<br>Dato' / Datin / Tuan / Puan / Encik / Cik</p>
   <p class="invite-occasion">dan seisi keluarga hadir ke majlis perkahwinan puteri kami dan pilihan hatinya</p>
   <br>
   <p class="invite-couple">N.A. Zarith Sofia<br><span class="amp">&amp;</span><br>M. Naufal</p>
@@ -1125,8 +1135,8 @@
 <section class="small-padding" id="countdown">
   <img src="assets/lace.png" class="lace" alt="">
   <div class="section-head">
-    <div class="eyebrow">Meraikan Majlis Bahagia Kami</div>
-    <div class="underline" style="width: 420px;"></div>
+    <div class="eyebrow"><span class="fit-line">Meraikan Majlis</span> <span class="fit-line">Bahagia Kami</span></div>
+    <div class="underline"></div>
     <h2>Kiraan Detik</h2>
   </div>
   <div class="countdown-grid" id="countdownGrid">
@@ -1157,7 +1167,7 @@
 <section id="gallery">
   <div class="section-head">
     <div class="eyebrow">Kenangan</div>
-    <div class="underline" style="width: 140px;"></div>
+    <div class="underline"></div>
     <h2>Galeri</h2>
   </div>
   <div class="carousel" id="carousel">
@@ -1183,7 +1193,7 @@
 <section id="contact">
   <div class="section-head">
     <div class="eyebrow">Ahli Majlis</div>
-    <div class="underline" style="width: 200px;"></div>
+    <div class="underline"></div>
     <h2>Hubungi</h2>
   </div>
   <div class="contact-grid">
@@ -1234,7 +1244,7 @@
     <br><br>
     <div class="section-head">
       <div class="eyebrow">Panduan ke Lokasi</div>
-      <div class="underline" style="width: 300px;"></div>
+      <div class="underline"></div>
       <h2>Rujukan</h2>
     </div>
     <div style="display:flex; align-items:stretch; justify-content:center; gap:8px;">
@@ -1259,7 +1269,7 @@
 <section id="rsvp">
   <div class="section-head">
     <div class="eyebrow">Mohon maklum balas</div>
-    <div class="underline" style="width: 300px;"></div>
+    <div class="underline"></div>
     <h2>RSVP</h2>
   </div>
 
@@ -1330,7 +1340,7 @@
 <section id="wishes">
   <div class="section-head">
     <div class="eyebrow">Daripada Tetamu</div>
-    <div class="underline" style="width: 250px;"></div>
+    <div class="underline"></div>
     <h2>Ucapan</h2>
   </div>
   <!-- <div id="wishesList" class="wishes-grid">
@@ -1355,7 +1365,7 @@
     <button type="button" class="wishes-modal-close" id="wishesModalClose" aria-label="Close">&times;</button>
     <div class="section-head" style="margin-bottom:24px;">
       <div class="eyebrow">Daripada Tetamu</div>
-      <div class="underline" style="width: 250px;"></div>
+      <div class="underline"></div>
       <h2>Semua Ucapan</h2>
     </div>
     <div id="wishesModalGrid" class="wishes-modal-grid"></div>
@@ -1390,7 +1400,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-    const WEDDING_DATE = new Date('2026-10-17T15:30:00');
+    const WEDDING_DATE = new Date('2026-11-07T11:00:00');
 
     const elDays = document.getElementById('cdDays');
     const elHours = document.getElementById('cdHours');
@@ -1448,6 +1458,30 @@ document.addEventListener('DOMContentLoaded', function(){
   window.addEventListener('resize', fitHeroNames);
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(fitHeroNames);
+  }
+})();
+
+(function(){
+  function fitUnderlines(){
+    document.querySelectorAll('.section-head').forEach(function(head){
+      var eyebrow = head.querySelector(':scope > .eyebrow');
+      var underline = head.querySelector(':scope > .underline');
+      if (!eyebrow || !underline || eyebrow.offsetParent === null) return;
+      var lines = eyebrow.querySelectorAll('.fit-line');
+      var width = 0;
+      if (lines.length) {
+        lines.forEach(function(l){ width = Math.max(width, l.getBoundingClientRect().width); });
+      } else {
+        width = eyebrow.getBoundingClientRect().width;
+      }
+      if (width > 0) underline.style.width = Math.round(width) + 'px';
+    });
+  }
+  window.fitUnderlines = fitUnderlines;
+  window.addEventListener('load', fitUnderlines);
+  window.addEventListener('resize', fitUnderlines);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(fitUnderlines);
   }
 })();
 
@@ -1663,6 +1697,7 @@ document.addEventListener('DOMContentLoaded', function(){
     allWishEntries.forEach(e => wishesModalGrid.appendChild(buildWishCard(e)));
     wishesModalOverlay.classList.add('show');
     document.body.style.overflow = 'hidden';
+    if (window.fitUnderlines) window.fitUnderlines();
   }
 
   function closeWishesModal(){

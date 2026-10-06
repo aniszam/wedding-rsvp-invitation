@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="light" />
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
+<script>
+  // Same "head start" pattern as the main invitation page: fire the claims
+  // fetch immediately so the Apps Script cold start overlaps with page load.
+  window.__GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzXi2ce-dg115phrcyZFPWI5-oNR2rdeAMyd1Z0Zbpyu-FW1w4Gy_sSzU5aGxAOehGxsw/exec';
+  window.__claimsFetchPromise = window.__GOOGLE_SHEET_URL
+    ? fetch(window.__GOOGLE_SHEET_URL, { method: 'GET' })
+        .then(function(res){ if(!res.ok){ throw new Error('bad response'); } return res.json(); })
+        .catch(function(){ return null; })
+    : Promise.resolve(null);
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<title>Zarith Sofia &amp; Naufal — Gift Registry</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Pinyon+Script&family=Tangerine:wght@400;700&family=Tenor+Sans&display=swap');
+
+  :root{
+    color-scheme: light;
+    --ivory: #FAF6EF;
+    --ivory-deep: #F3EDE1;
+    --green: #35452F;
+    --green-deep: #24301F;
+    --rose: #C48A8A;
+    --rose-soft: #E9D6D2;
+    --gold: #48320c;
+    --purple:#720760;
+    --ink: #3A342C;
+    --sage: #F3EDE1;
+    --line: rgba(53,69,47,0.25);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; overflow-x:hidden; }
+  body{
+    margin:0;
+    max-width:100vw;
+    overflow-x:hidden;
+    background:var(--ivory);
+    color:var(--ink);
+    font-family:'EB Garamond', serif;
+    font-size:18px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .bg-fixed{
+    position:fixed;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    background-image: url('../assets/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index:-1;
+  }
+
+  .wrap{ max-width:1040px; margin:0 auto; padding:0 24px; }
+
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'Tenor Sans', sans-serif;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--gold);
+    text-decoration:none;
+    opacity:0.8;
+    transition:opacity .2s ease;
+  }
+  .back-link:hover{ opacity:1; }
+
+  header.gift-header{
+    padding:48px 0 12px;
+  }
+
+  .eyebrow{
+    display:inline-block;
+    font-family:'Tenor Sans', sans-serif;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    font-size:14px;
+    color:var(--gold);
+  }
+  .underline{
+    height:1px;
+    width:60px;
+    background:var(--rose);
+    margin:10px auto 0;
+  }
+  .section-head{ text-align:center; margin-bottom:28px; }
+  .section-head h2{ font-size:38px; font-style:italic; margin-top:5px; font-family:'Cormorant Garamond', serif; }
+  .section-sub{
+    max-width:560px;
+    margin:0 auto 48px;
+    text-align:center;
+    color:var(--ink);
+    opacity:0.85;
+    font-size:17px;
+  }
+
+  /* ---------- GIFT GRID ---------- */
+  .gift-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    gap:24px;
+    padding-bottom:80px;
+  }
+
+  .gift-card{
+    background:#fffaefea;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:28px 24px;
+    display:flex;
+    flex-direction:column;
+    text-align:center;
+    transition:box-shadow .2s ease, transform .2s ease;
+  }
+  .gift-card:hover{ box-shadow:0 8px 20px rgba(0,0,0,0.06); }
+
+  .gift-card-media{
+    width:56px; height:56px;
+    margin:0 auto 16px;
+    border-radius:50%;
+    background:var(--ivory-deep);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--rose);
+    font-size:20px;
+  }
+
+  .gift-card-name{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:22px;
+    color:var(--green-deep);
+    margin-bottom:6px;
+  }
+
+  .gift-card-price{
+    font-family:'Tenor Sans', sans-serif;
+    letter-spacing:0.08em;
+    font-size:14px;
+    color:var(--gold);
+    margin-bottom:14px;
+  }
+
+  .gift-card-link{
+    font-family:'Tenor Sans', sans-serif;
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--ink);
+    opacity:0.7;
+    text-decoration:underline;
+    margin-bottom:20px;
+    display:inline-block;
+  }
+  .gift-card-link:hover{ opacity:1; }
+
+  .gift-card-spacer{ flex:1; }
+
+  .gift-claim-btn{
+    width:100%;
+    border:1px solid var(--green-deep);
+    background:var(--green-deep);
+    color:var(--ivory);
+    font-family:'Tenor Sans', sans-serif;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    font-size:12px;
+    padding:12px 10px;
+    border-radius:2px;
+    cursor:pointer;
+    transition:transform .15s ease, filter .15s ease;
+  }
+  .gift-claim-btn:hover{ filter:brightness(1.15); }
+  .gift-claim-btn:active{ transform:scale(0.98); }
+
+  .gift-card.claimed .gift-claim-btn,
+  .gift-claim-btn:disabled{
+    display:none;
+  }
+
+  .gift-claimed-badge{
+    display:none;
+    font-family:'Tenor Sans', sans-serif;
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--rose);
+    border:1px solid var(--rose-soft);
+    background:var(--rose-soft);
+    border-radius:2px;
+    padding:12px 10px;
+  }
+  .gift-card.claimed .gift-claimed-badge{ display:block; }
+  .gift-claimed-badge b{ color:var(--green-deep); font-style:italic; font-family:'Cormorant Garamond', serif; font-weight:600; }
+
+  .gift-card.skeleton .gift-card-name,
+  .gift-card.skeleton .gift-card-price{
+    background:var(--ivory-deep);
+    color:transparent;
+    border-radius:3px;
+  }
+  .gift-card.skeleton .gift-card-link,
+  .gift-card.skeleton .gift-claim-btn{ visibility:hidden; }
+
+  /* ---------- MODAL ---------- */
+  .gift-modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    display:none;
+    align-items:flex-start;
+    justify-content:center;
+    padding:60px 20px;
+    overflow-y:auto;
+    z-index:1000;
+  }
+  .gift-modal-overlay.show{ display:flex; }
+
+  .gift-modal{
+    position:relative;
+    background:#fdfaf5;
+    max-width:460px;
+    width:100%;
+    padding:40px 32px;
+    border-radius:4px;
+  }
+
+  .gift-modal-close{
+    position:absolute;
+    top:16px; right:20px;
+    background:none; border:none;
+    font-size:28px; line-height:1;
+    color:var(--green-deep);
+    cursor:pointer;
+    transition:color .2s ease;
+  }
+  .gift-modal-close:hover{ color:var(--rose); }
+
+  .gift-modal-sub{
+    text-align:center;
+    font-size:15px;
+    color:var(--ink);
+    opacity:0.85;
+    margin:-10px 0 24px;
+  }
+
+  .gift-qr-wrap{
+    display:none;
+    text-align:center;
+    margin:0 0 24px;
+  }
+  .gift-qr-wrap.show{ display:block; }
+  .gift-qr-wrap img{
+    width:220px;
+    height:220px;
+    object-fit:contain;
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:#fff;
+    padding:8px;
+  }
+  .gift-qr-caption{
+    margin-top:10px;
+    font-family:'Tenor Sans', sans-serif;
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:var(--gold);
+    opacity:0.85;
+  }
+
+  .gift-names-list{ display:flex; flex-direction:column; gap:14px; margin-bottom:14px; }
+  .gift-name-row{ display:flex; align-items:center; gap:8px; }
+  .gift-name-input{
+    flex:1;
+    border:none;
+    border-bottom:1px solid var(--line);
+    background:transparent;
+    font-family:'EB Garamond', serif;
+    font-size:18px;
+    color:var(--ink);
+    padding:8px 2px;
+    outline:none;
+    transition:border-color .25s ease;
+  }
+  .gift-name-input:focus{ border-color:var(--rose); }
+  .gift-name-remove{
+    background:none; border:none;
+    color:var(--rose);
+    font-size:20px;
+    cursor:pointer;
+    opacity:0.7;
+    line-height:1;
+  }
+  .gift-name-remove:hover{ opacity:1; }
+
+  .gift-add-name{
+    display:block;
+    margin:0 auto 24px;
+    background:none; border:none;
+    font-family:'Tenor Sans', sans-serif;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--gold);
+    text-decoration:underline;
+    cursor:pointer;
+    opacity:0.85;
+  }
+  .gift-add-name:hover{ opacity:1; }
+
+  .gift-submit-btn{
+    width:100%;
+    border:none;
+    background:var(--green-deep);
+    color:var(--ivory);
+    font-family:'Tenor Sans', sans-serif;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    font-size:13px;
+    padding:14px 10px;
+    border-radius:2px;
+    cursor:pointer;
+    transition:filter .2s ease;
+  }
+  .gift-submit-btn:hover{ filter:brightness(1.15); }
+  .gift-submit-btn:disabled{ opacity:0.6; cursor:default; filter:none; }
+
+  .form-msg{
+    text-align:center;
+    margin-top:14px;
+    font-family:'Tenor Sans', sans-serif;
+    font-size:13px;
+    color:#a5453a;
+    min-height:16px;
+  }
+  .form-msg.ok{ color:var(--green); }
+
+  .gift-thankyou{
+    display:none;
+    text-align:center;
+  }
+  .gift-thankyou.show{ display:block; }
+  .gift-thankyou h3{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:26px;
+    color:var(--green-deep);
+    margin:0 0 14px;
+  }
+  .gift-thankyou p{
+    font-size:16px;
+    color:var(--ink);
+    opacity:0.9;
+    margin:0 0 26px;
+  }
+
+  footer{
+    text-align:center;
+    padding:40px 24px 60px;
+    font-family:'Tenor Sans', sans-serif;
+    font-size:12px;
+    letter-spacing:0.14em;
+    color:var(--gold);
+    opacity:0.7;
+  }
+</style>
+</head>
+<body>
+<div class="bg-fixed"></div>
+
+<div class="wrap">
+  <header class="gift-header">
+    <a class="back-link" href="../index.html">&larr; Back to Invitation</a>
+  </header>
+
+  <div class="section-head" style="margin-top:28px;">
+    <div class="eyebrow">Hadiah Perkahwinan</div>
+    <div class="underline"></div>
+    <h2>Gift Registry</h2>
+  </div>
+  <p class="section-sub">
+    Your presence is truly the greatest gift — but if you'd like to spoil us a little,
+    here are a few things on our wishlist. Tap "Claim This Gift" so no two guests
+    bring the same thing twice 🤍
+  </p>
+
+  <div id="giftGrid" class="gift-grid"></div>
+</div>
+
+<div class="gift-modal-overlay" id="giftModalOverlay">
+  <div class="gift-modal">
+    <button type="button" class="gift-modal-close" id="giftModalClose" aria-label="Close">&times;</button>
+    <div class="section-head" style="margin-bottom:8px;">
+      <div class="eyebrow">Claiming</div>
+      <div class="underline"></div>
+      <h2 id="giftModalItemName" style="font-size:26px;">Item name</h2>
+    </div>
+    <p class="gift-modal-sub" id="giftModalSub">Let us know who this is from so we can thank you properly later.</p>
+
+    <div class="gift-qr-wrap" id="giftQrWrap">
+      <img id="giftQrImg" src="" alt="Bank transfer QR code">
+      <div class="gift-qr-caption">Scan to transfer, then let us know below 🤍</div>
+    </div>
+
+    <form id="giftClaimForm">
+      <div id="giftNamesList" class="gift-names-list">
+        <div class="gift-name-row">
+          <input type="text" class="gift-name-input" placeholder="Your name" required>
+        </div>
+      </div>
+      <button type="button" id="giftAddName" class="gift-add-name">+ Add another name</button>
+      <button type="submit" id="giftClaimSubmit" class="gift-submit-btn">Claim This Gift</button>
+      <div class="form-msg" id="giftModalMsg"></div>
+    </form>
+
+    <div class="gift-thankyou" id="giftThankYou">
+      <h3>Thank you, <span id="giftThankYouNames"></span>!</h3>
+      <p>If you require our address, do PM the bride! Your gift and thoughts are highly appreciated 🤍</p>
+      <button type="button" id="giftThankYouClose" class="gift-submit-btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div>ZS &amp; N &nbsp;·&nbsp; Gift Registry</div>
+</footer>
+
+<script>
+(function(){
+  // The item catalog AND claim status both live in the Google Sheet now —
+  // see gift-apps-script.gs in the repo root for the "Items" tab layout
+  // (itemId | name | price | link | icon | names | claimedAt). Add, remove,
+  // or reorder gifts by editing the sheet directly; no code changes needed.
+  const CONFIG = {
+    GOOGLE_SHEET_URL: window.__GOOGLE_SHEET_URL || ''
+  };
+
+  // Hardcoded, mandatory first option — not stored in the sheet, so it's
+  // always present even if the sheet fetch fails. Its claim button never
+  // gets disabled since multiple guests can contribute. Swap qrImage for
+  // your real bank transfer QR once you have one.
+  const CASH_FUND_ITEM = {
+    itemId: 'cash-fund',
+    name: 'Cash Fund',
+    price: 'Seikhlas Hati',
+    link: '',
+    icon: 'fa-solid fa-hand-holding-dollar',
+    qrImage: '../assets/cash-fund-qr.jpg',
+    special: true
+  };
+
+  const giftGrid = document.getElementById('giftGrid');
+  const overlay = document.getElementById('giftModalOverlay');
+  const modalClose = document.getElementById('giftModalClose');
+  const modalItemName = document.getElementById('giftModalItemName');
+  const modalSub = document.getElementById('giftModalSub');
+  const qrWrap = document.getElementById('giftQrWrap');
+  const qrImg = document.getElementById('giftQrImg');
+  const namesList = document.getElementById('giftNamesList');
+  const addNameBtn = document.getElementById('giftAddName');
+  const claimForm = document.getElementById('giftClaimForm');
+  const claimSubmit = document.getElementById('giftClaimSubmit');
+  const modalMsg = document.getElementById('giftModalMsg');
+  const thankYou = document.getElementById('giftThankYou');
+  const thankYouNames = document.getElementById('giftThankYouNames');
+  const thankYouClose = document.getElementById('giftThankYouClose');
+
+  let items = [];
+  let activeItem = null;
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  // ["A"] -> "A" | ["A","B"] -> "A and B" | ["A","B","C"] -> "A, B, and C"
+  function formatNameList(names){
+    if(names.length <= 1) return names.join('');
+    if(names.length === 2) return names.join(' and ');
+    return names.slice(0, -1).join(', ') + ', and ' + names[names.length - 1];
+  }
+
+  function renderSkeleton(){
+    giftGrid.innerHTML = '';
+    for(let i = 0; i < 6; i++){
+      const card = document.createElement('div');
+      card.className = 'gift-card skeleton';
+      card.innerHTML = '<div class="gift-card-media"><i class="fa-solid fa-gift"></i></div>' +
+        '<div class="gift-card-name">Loading</div>' +
+        '<div class="gift-card-price">Loading</div>' +
+        '<div class="gift-card-spacer"></div>' +
+        '<button class="gift-claim-btn">Claim This Gift</button>';
+      giftGrid.appendChild(card);
+    }
+  }
+
+  function buildCard(item){
+    const claimed = !item.special && !!item.names;
+    const card = document.createElement('div');
+    card.className = 'gift-card' + (claimed ? ' claimed' : '');
+    card.dataset.itemId = item.itemId;
+
+    const linkHtml = item.link
+      ? '<a class="gift-card-link" href="' + item.link + '" target="_blank" rel="noopener">View Item &#8599;</a>'
+      : '';
+
+    card.innerHTML =
+      '<div class="gift-card-media"><i class="' + (item.icon || 'fa-solid fa-gift') + '"></i></div>' +
+      '<div class="gift-card-name">' + escapeHtml(item.name) + '</div>' +
+      '<div class="gift-card-price">' + escapeHtml(item.price) + '</div>' +
+      linkHtml +
+      '<div class="gift-card-spacer"></div>' +
+      '<button type="button" class="gift-claim-btn">Claim This Gift</button>' +
+      '<div class="gift-claimed-badge">&#10003; Claimed by <b>' + escapeHtml(item.names ? formatNameList(item.names.split(', ')) : '') + '</b></div>';
+
+    const btn = card.querySelector('.gift-claim-btn');
+    btn.addEventListener('click', () => openModal(item));
+
+    return card;
+  }
+
+  // Cash Fund always leads; among the rest, unclaimed gifts sort above
+  // already-claimed ones (each group keeps the sheet's original order).
+  function sortedItems(){
+    const special = items.filter(i => i.special);
+    const rest = items.filter(i => !i.special);
+    const unclaimed = rest.filter(i => !i.names);
+    const claimed = rest.filter(i => !!i.names);
+    return [...special, ...unclaimed, ...claimed];
+  }
+
+  function renderGrid(){
+    if(items.length === 0){
+      giftGrid.innerHTML = '<p style="text-align:center; opacity:0.7; grid-column:1/-1;">The gift list couldn\'t be loaded right now — please try refreshing.</p>';
+      return;
+    }
+    giftGrid.innerHTML = '';
+    sortedItems().forEach(item => giftGrid.appendChild(buildCard(item)));
+  }
+
+  function openModal(item){
+    activeItem = item;
+    modalItemName.textContent = item.name;
+    namesList.innerHTML = '<div class="gift-name-row"><input type="text" class="gift-name-input" placeholder="Your name" required></div>';
+    modalMsg.textContent = '';
+    modalMsg.className = 'form-msg';
+    claimSubmit.disabled = false;
+    claimSubmit.textContent = 'Claim This Gift';
+
+    thankYou.classList.remove('show');
+    claimForm.style.display = '';
+    modalSub.style.display = '';
+
+    if(item.special && item.qrImage){
+      qrImg.src = item.qrImage;
+      qrWrap.classList.add('show');
+    } else {
+      qrWrap.classList.remove('show');
+      qrImg.src = '';
+    }
+
+    overlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    namesList.querySelector('.gift-name-input').focus();
+  }
+
+  function closeModal(){
+    overlay.classList.remove('show');
+    document.body.style.overflow = '';
+    activeItem = null;
+  }
+
+  modalClose.addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => { if(e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && overlay.classList.contains('show')) closeModal();
+  });
+
+  addNameBtn.addEventListener('click', () => {
+    const row = document.createElement('div');
+    row.className = 'gift-name-row';
+    row.innerHTML = '<input type="text" class="gift-name-input" placeholder="Another name">' +
+      '<button type="button" class="gift-name-remove" aria-label="Remove">&times;</button>';
+    row.querySelector('.gift-name-remove').addEventListener('click', () => row.remove());
+    namesList.appendChild(row);
+  });
+
+  claimForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    if(!activeItem) return;
+
+    const names = Array.from(namesList.querySelectorAll('.gift-name-input'))
+      .map(i => i.value.trim())
+      .filter(Boolean);
+
+    if(names.length === 0){
+      modalMsg.textContent = 'Please enter at least one name.';
+      modalMsg.className = 'form-msg';
+      return;
+    }
+
+    claimSubmit.disabled = true;
+    claimSubmit.textContent = 'Claiming…';
+    modalMsg.textContent = '';
+
+    const entry = {
+      itemId: activeItem.itemId,
+      names: names.join(', '),
+      claimedAt: new Date().toISOString()
+    };
+
+    const result = await submitClaim(entry);
+
+    if(result === 'already_claimed'){
+      modalMsg.textContent = 'Someone just claimed this gift. Refreshing the list…';
+      modalMsg.className = 'form-msg';
+      claimSubmit.disabled = false;
+      claimSubmit.textContent = 'Claim This Gift';
+      await loadItems();
+      renderGrid();
+      return;
+    }
+
+    if(result !== 'ok'){
+      modalMsg.textContent = 'Something went wrong — please try again.';
+      modalMsg.className = 'form-msg';
+      claimSubmit.disabled = false;
+      claimSubmit.textContent = 'Claim This Gift';
+      return;
+    }
+
+    // Cash Fund stays open for every guest to contribute — don't mark it
+    // claimed. Every other item locks after its first successful claim.
+    if(!activeItem.special){
+      activeItem.names = entry.names;
+      activeItem.claimedAt = entry.claimedAt;
+    }
+    renderGrid();
+
+    thankYouNames.textContent = formatNameList(names);
+    claimForm.style.display = 'none';
+    modalSub.style.display = 'none';
+    qrWrap.classList.remove('show');
+    thankYou.classList.add('show');
+  });
+
+  thankYouClose.addEventListener('click', closeModal);
+
+  // Returns 'ok' | 'already_claimed' | 'error'
+  async function submitClaim(entry){
+    if(!CONFIG.GOOGLE_SHEET_URL) return 'error';
+    try{
+      const body = new URLSearchParams(entry);
+      const res = await fetch(CONFIG.GOOGLE_SHEET_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
+      });
+      if(!res.ok) return 'error';
+      const data = await res.json();
+      if(data && data.ok) return 'ok';
+      if(data && data.error === 'already_claimed') return 'already_claimed';
+      return 'error';
+    } catch(err){
+      return 'error';
+    }
+  }
+
+  async function fetchAllItems(){
+    if(window.__claimsFetchPromise){
+      const headStart = window.__claimsFetchPromise;
+      window.__claimsFetchPromise = null;
+      const data = await headStart;
+      if(Array.isArray(data)) return data;
+    }
+    if(!CONFIG.GOOGLE_SHEET_URL) return [];
+    try{
+      const res = await fetch(CONFIG.GOOGLE_SHEET_URL, { method: 'GET' });
+      if(!res.ok) throw new Error('bad response');
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    } catch(err){
+      return [];
+    }
+  }
+
+  async function loadItems(){
+    items = [CASH_FUND_ITEM, ...(await fetchAllItems())];
+  }
+
+  renderSkeleton();
+  loadItems().then(renderGrid);
+})();
+</script>
+
+</body>
+</html>

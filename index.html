@@ -4,6 +4,18 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="color-scheme" content="light" />
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
+<script>
+  // Head-start: fire the wishes-wall fetch immediately, in parallel with the
+  // rest of the page loading, instead of waiting for the parser to reach the
+  // body script. Apps Script round-trips are slow (cold start + a redirect
+  // hop), so every millisecond of overlap here matters for first-time visitors.
+  window.__GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxqosdH6jsk-7jIUu9hol3vTRBwDTtIrQGf-fX27l6LTGeWVjn_ZvwyJocGQ11VmxR1OA/exec';
+  window.__wishesFetchPromise = fetch(window.__GOOGLE_SHEET_URL, { method: 'GET' })
+    .then(function(res){ if(!res.ok){ throw new Error('bad response'); } return res.json(); })
+    .catch(function(){ return null; });
+</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <title>Zarith Sofia &amp; Naufal — RSVP</title>
 
@@ -417,6 +429,22 @@
   padding: 18px 16px;
   background: var(--ivory-deep);
 }
+  .wish-card.skeleton{
+    animation: wish-skeleton-pulse 1.3s ease-in-out infinite;
+  }
+  .wish-card.skeleton .wish-text,
+  .wish-card.skeleton .wish-name{
+    height: 12px;
+    border-radius: 4px;
+    background: var(--line);
+  }
+  .wish-card.skeleton .wish-text{ margin-top: 22px; width: 90%; }
+  .wish-card.skeleton .wish-text + .wish-text{ width: 65%; margin-top: 8px; }
+  .wish-card.skeleton .wish-name{ margin-top: 18px; width: 40%; }
+  @keyframes wish-skeleton-pulse{
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
   /* .wish-card::before{
     content:'"';
     font-family:'Cormorant Garamond', serif;
@@ -1379,6 +1407,7 @@
   <div class="monogram">ZS &amp; N</div>
   <div>#NauFallForZarith &nbsp;·&nbsp; 7 NOVEMBER, 2026</div>
   <div>Lovingly coded by Zarith Sofia</div>
+  <a class="admin-link" href="gift/" style="display:inline-block;">Gift Registry</a>
   <!-- <button class="admin-link" id="adminToggle">couple's view</button> -->
 </footer>
 
@@ -1491,8 +1520,9 @@ document.addEventListener('DOMContentLoaded', function(){
 (function(){
   // Paste your deployed Google Apps Script Web App URL here to also log
   // every RSVP into a Google Sheet. Leave blank to skip that step.
+  // (Kept in sync with the head-start fetch in <head> — see window.__GOOGLE_SHEET_URL.)
   const CONFIG = {
-    GOOGLE_SHEET_URL: 'https://script.google.com/macros/s/AKfycbxqosdH6jsk-7jIUu9hol3vTRBwDTtIrQGf-fX27l6LTGeWVjn_ZvwyJocGQ11VmxR1OA/exec'
+    GOOGLE_SHEET_URL: window.__GOOGLE_SHEET_URL || 'https://script.google.com/macros/s/AKfycbxqosdH6jsk-7jIUu9hol3vTRBwDTtIrQGf-fX27l6LTGeWVjn_ZvwyJocGQ11VmxR1OA/exec'
   };
 
   const attendYes = document.getElementById('attendYes');
@@ -1612,6 +1642,15 @@ document.addEventListener('DOMContentLoaded', function(){
   // window.storage when previewing inside Claude. Used by both the Well
   // Wishes wall and the couple's admin view.
   async function fetchAllRSVPs(){
+    // Use the fetch kicked off from <head> on first call — it's had a head
+    // start on network latency. Later calls (if any) go through fetch fresh.
+    if(window.__wishesFetchPromise){
+      const headStart = window.__wishesFetchPromise;
+      window.__wishesFetchPromise = null;
+      const data = await headStart;
+      if(Array.isArray(data)){ return data; }
+    }
+
     if(CONFIG.GOOGLE_SHEET_URL){
       try{
         const res = await fetch(CONFIG.GOOGLE_SHEET_URL, { method: 'GET' });
@@ -1659,6 +1698,7 @@ document.addEventListener('DOMContentLoaded', function(){
   const wishesModalGrid = document.getElementById('wishesModalGrid');
 
   let allWishEntries = [];
+  const WISHES_CACHE_KEY = 'rsvpWishesCache';
 
   function buildWishCard(e){
     const card = document.createElement('div');
@@ -1668,21 +1708,57 @@ document.addEventListener('DOMContentLoaded', function(){
     return card;
   }
 
-  async function loadWishes(){
-    wishesList.innerHTML = '<div class="admin-empty">Ucapan dari para tetamu.</div>';
+  function renderWishesSkeleton(){
+    wishesList.innerHTML = '';
+    for(let i = 0; i < 4; i++){
+      const card = document.createElement('div');
+      card.className = 'wish-card skeleton';
+      card.innerHTML = '<div class="wish-text"></div><div class="wish-text"></div><div class="wish-name"></div>';
+      wishesList.appendChild(card);
+    }
+  }
 
-    const entries = (await fetchAllRSVPs()).filter(e => e.message);
-
+  function renderWishes(entries){
     if(entries.length === 0){
       wishesList.innerHTML = '<div class="admin-empty">Tinggalkan mesej di ruangan RSVP.</div>';
       return;
     }
-
-    entries.sort((a,b) => new Date(b.submittedAt) - new Date(a.submittedAt));
     allWishEntries = entries;
-
     wishesList.innerHTML = '';
     entries.forEach(e => wishesList.appendChild(buildWishCard(e)));
+  }
+
+  function readWishesCache(){
+    try{
+      const raw = localStorage.getItem(WISHES_CACHE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch(err){ return null; }
+  }
+
+  function writeWishesCache(entries){
+    try{ localStorage.setItem(WISHES_CACHE_KEY, JSON.stringify(entries)); } catch(err){ /* storage unavailable */ }
+  }
+
+  // Stale-while-revalidate: paint instantly from the last cached fetch (if any),
+  // then hit the Apps Script endpoint in the background — it's slow (redirect +
+  // cold start) — and only touch the DOM again if the data actually changed.
+  async function loadWishes(){
+    const cached = readWishesCache();
+    if(cached){
+      renderWishes(cached);
+    } else {
+      renderWishesSkeleton();
+    }
+
+    const fresh = (await fetchAllRSVPs()).filter(e => e.message);
+    fresh.sort((a,b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+
+    if(fresh.length === 0 && cached){ return; } // keep showing cache if a fetch/read failed
+
+    if(!cached || JSON.stringify(fresh) !== JSON.stringify(cached)){
+      renderWishes(fresh);
+    }
+    writeWishesCache(fresh);
   }
   loadWishes();
 

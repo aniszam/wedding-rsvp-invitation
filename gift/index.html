@@ -698,11 +698,49 @@
   }
 
   async function loadItems(){
-    items = [CASH_FUND_ITEM, ...(await fetchAllItems())];
+    const fresh = await fetchAllItems();
+    items = [CASH_FUND_ITEM, ...fresh];
+    return fresh;
   }
 
-  renderSkeleton();
-  loadItems().then(renderGrid);
+  // Stale-while-revalidate, same pattern as the wishes wall on the main
+  // invitation page: paint instantly from the last successful fetch (if
+  // any) while the slow Apps Script round-trip (cold start + redirect hop)
+  // happens in the background, then only touch the DOM again if the data
+  // actually changed.
+  const ITEMS_CACHE_KEY = 'giftItemsCache';
+
+  function readItemsCache(){
+    try{
+      const raw = localStorage.getItem(ITEMS_CACHE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch(err){ return null; }
+  }
+
+  function writeItemsCache(sheetItems){
+    try{ localStorage.setItem(ITEMS_CACHE_KEY, JSON.stringify(sheetItems)); } catch(err){ /* storage unavailable */ }
+  }
+
+  async function init(){
+    const cached = readItemsCache();
+    if(cached){
+      items = [CASH_FUND_ITEM, ...cached];
+      renderGrid();
+    } else {
+      renderSkeleton();
+    }
+
+    const fresh = await loadItems();
+
+    if(fresh.length === 0 && cached){ return; } // fetch failed — keep showing cache
+
+    if(!cached || JSON.stringify(fresh) !== JSON.stringify(cached)){
+      renderGrid();
+    }
+    writeItemsCache(fresh);
+  }
+
+  init();
 })();
 </script>
 

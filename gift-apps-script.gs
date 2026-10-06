@@ -40,7 +40,16 @@
  * 6. Re-deploy (new version) any time you edit this script.
  */
 
+var ITEMS_CACHE_KEY = 'items';
+var ITEMS_CACHE_SECONDS = 20;
+
 function doGet(e) {
+  var cache = CacheService.getScriptCache();
+  var cached = cache.get(ITEMS_CACHE_KEY);
+  if (cached) {
+    return jsonOutput(JSON.parse(cached));
+  }
+
   var sheet = getSheet();
   var rows = sheet.getDataRange().getValues();
   var headers = rows.shift();
@@ -51,6 +60,8 @@ function doGet(e) {
       headers.forEach(function (h, i) { obj[h] = r[i]; });
       return obj;
     });
+
+  cache.put(ITEMS_CACHE_KEY, JSON.stringify(items), ITEMS_CACHE_SECONDS);
   return jsonOutput(items);
 }
 
@@ -89,6 +100,7 @@ function doPost(e) {
         }
         sheet.getRange(i + 1, namesCol + 1).setValue(e.parameter.names || '');
         sheet.getRange(i + 1, claimedAtCol + 1).setValue(e.parameter.claimedAt || new Date().toISOString());
+        CacheService.getScriptCache().remove(ITEMS_CACHE_KEY);
         return jsonOutput({ ok: true });
       }
     }

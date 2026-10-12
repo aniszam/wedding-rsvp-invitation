@@ -1364,22 +1364,48 @@
         </select>
       </div> -->
 
-      <div class="field" id="paxField">
-        <label for="paxCount">Bilangan tetamu</label>
-        <div class="custom-select" id="paxSelect">
-          <button type="button" class="custom-select-trigger" id="paxTrigger" aria-haspopup="listbox" aria-expanded="false">
-            <span id="paxTriggerText">Sila pilih</span>
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </button>
-          <ul class="custom-select-options" id="paxOptions" role="listbox" tabindex="-1">
-            <li role="option" data-value="1">1</li>
-            <li role="option" data-value="2">2</li>
-            <li role="option" data-value="3">3</li>
-            <li role="option" data-value="4">4</li>
-          </ul>
-          <input type="hidden" id="paxCount" name="paxCount" required>
+      <div id="paxField">
+        <div class="field">
+          <label for="paxAdultCount">Bilangan Dewasa</label>
+          <div class="custom-select" id="paxAdultSelect">
+            <button type="button" class="custom-select-trigger" id="paxAdultTrigger" aria-haspopup="listbox" aria-expanded="false">
+              <span id="paxAdultTriggerText">Sila pilih</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <ul class="custom-select-options" id="paxAdultOptions" role="listbox" tabindex="-1">
+              <li role="option" data-value="1">1</li>
+              <li role="option" data-value="2">2</li>
+              <li role="option" data-value="3">3</li>
+              <li role="option" data-value="4">4</li>
+              <li role="option" data-value="5">5</li>
+              <li role="option" data-value="6">6</li>
+            </ul>
+            <input type="hidden" id="paxAdultCount" name="paxAdultCount">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="paxKidsCount">Bilangan Kanak-kanak</label>
+          <div class="custom-select" id="paxKidsSelect">
+            <button type="button" class="custom-select-trigger" id="paxKidsTrigger" aria-haspopup="listbox" aria-expanded="false">
+              <span id="paxKidsTriggerText">Sila pilih</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <ul class="custom-select-options" id="paxKidsOptions" role="listbox" tabindex="-1">
+              <li role="option" data-value="0">0</li>
+              <li role="option" data-value="1">1</li>
+              <li role="option" data-value="2">2</li>
+              <li role="option" data-value="3">3</li>
+              <li role="option" data-value="4">4</li>
+              <li role="option" data-value="5">5</li>
+              <li role="option" data-value="6">6</li>
+            </ul>
+            <input type="hidden" id="paxKidsCount" name="paxKidsCount">
+          </div>
         </div>
       </div>
 
@@ -1565,7 +1591,8 @@ document.addEventListener('DOMContentLoaded', function(){
   const attendYes = document.getElementById('attendYes');
   const attendNo = document.getElementById('attendNo');
   const paxField = document.getElementById('paxField');
-  const paxCount = document.getElementById('paxCount');
+  const paxAdultCount = document.getElementById('paxAdultCount');
+  const paxKidsCount = document.getElementById('paxKidsCount');
   const form = document.getElementById('rsvpForm');
   const formMsg = document.getElementById('formMsg');
   const submitBtn = document.getElementById('submitBtn');
@@ -1576,10 +1603,8 @@ document.addEventListener('DOMContentLoaded', function(){
   function syncPax(){
     if(attendYes.checked){
       paxField.classList.add('show');
-      paxCount.setAttribute('required','required');
     } else {
       paxField.classList.remove('show');
-      paxCount.removeAttribute('required');
     }
   }
   attendYes.addEventListener('change', syncPax);
@@ -1591,13 +1616,18 @@ document.addEventListener('DOMContentLoaded', function(){
 
     const name = document.getElementById('guestName').value.trim();
     const attending = attendYes.checked ? 'yes' : (attendNo.checked ? 'no' : '');
-    const pax = paxCount.value.trim();
+    const paxAdult = paxAdultCount.value.trim();
+    const paxKids = paxKidsCount.value.trim();
     const msg = document.getElementById('guestMsg').value.trim();
 
     if(!name){ formMsg.textContent = 'Please share your name.'; return; }
     if(!attending){ formMsg.textContent = 'Please let us know if you can attend.'; return; }
-    if(attending === 'yes' && (!pax || isNaN(pax) || Number(pax) < 1)){
-      formMsg.textContent = 'Please enter how many guests will attend.';
+    if(attending === 'yes' && (!paxAdult || isNaN(paxAdult) || Number(paxAdult) < 1)){
+      formMsg.textContent = 'Sila pilih bilangan dewasa.';
+      return;
+    }
+    if(attending === 'yes' && (paxKids === '' || isNaN(paxKids) || Number(paxKids) < 0)){
+      formMsg.textContent = 'Sila pilih bilangan kanak-kanak.';
       return;
     }
 
@@ -1607,7 +1637,9 @@ document.addEventListener('DOMContentLoaded', function(){
     const entry = {
       name: name,
       attending: attending,
-      pax: attending === 'yes' ? Number(pax) : 0,
+      paxAdult: attending === 'yes' ? Number(paxAdult) : 0,
+      paxKids: attending === 'yes' ? Number(paxKids) : 0,
+      pax: attending === 'yes' ? (Number(paxAdult) + Number(paxKids)) : 0,
       message: msg,
       submittedAt: new Date().toISOString()
     };
@@ -1660,6 +1692,8 @@ document.addEventListener('DOMContentLoaded', function(){
       const body = new URLSearchParams({
         name: entry.name,
         attending: entry.attending,
+        paxAdult: String(entry.paxAdult),
+        paxKids: String(entry.paxKids),
         pax: String(entry.pax),
         message: entry.message,
         submittedAt: entry.submittedAt
@@ -1959,54 +1993,60 @@ document.addEventListener('DOMContentLoaded', function(){
   document.addEventListener('keydown', autoStartOnce);
 })();
 
-  const trigger = document.getElementById('paxTrigger');
-  const triggerText = document.getElementById('paxTriggerText');
-  const optionsList = document.getElementById('paxOptions');
-  const hiddenInput = document.getElementById('paxCount');
-  const options = Array.from(optionsList.children);
+  function initCustomSelect(selectId, triggerId, triggerTextId, optionsId, hiddenInputId){
+    const select = document.getElementById(selectId);
+    const trigger = document.getElementById(triggerId);
+    const triggerText = document.getElementById(triggerTextId);
+    const optionsList = document.getElementById(optionsId);
+    const hiddenInput = document.getElementById(hiddenInputId);
+    const options = Array.from(optionsList.children);
 
-  function closeDropdown(){
-    optionsList.classList.remove('show');
-    trigger.setAttribute('aria-expanded', 'false');
-  }
-
-  function openDropdown(){
-    optionsList.classList.add('show');
-    trigger.setAttribute('aria-expanded', 'true');
-  }
-
-  trigger.addEventListener('click', function(e){
-    e.stopPropagation();
-    optionsList.classList.contains('show') ? closeDropdown() : openDropdown();
-  });
-
-  trigger.classList.add('placeholder');
-
-  options.forEach(opt => {
-    opt.addEventListener('click', function(){
-      options.forEach(o => o.classList.remove('active'));
-      opt.classList.add('active');
-      triggerText.textContent = opt.dataset.value;
-      trigger.classList.remove('placeholder');
-      hiddenInput.value = opt.dataset.value;
-      hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-      closeDropdown();
-    });
-  });
-
-  document.addEventListener('click', function(e){
-    if(!document.getElementById('paxSelect').contains(e.target)){
-      closeDropdown();
+    function closeDropdown(){
+      optionsList.classList.remove('show');
+      trigger.setAttribute('aria-expanded', 'false');
     }
-  });
 
-  trigger.addEventListener('keydown', function(e){
-    if(e.key === 'Enter' || e.key === ' '){
-      e.preventDefault();
+    function openDropdown(){
+      optionsList.classList.add('show');
+      trigger.setAttribute('aria-expanded', 'true');
+    }
+
+    trigger.addEventListener('click', function(e){
+      e.stopPropagation();
       optionsList.classList.contains('show') ? closeDropdown() : openDropdown();
-    }
-    if(e.key === 'Escape'){ closeDropdown(); }
-  });
+    });
+
+    trigger.classList.add('placeholder');
+
+    options.forEach(opt => {
+      opt.addEventListener('click', function(){
+        options.forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        triggerText.textContent = opt.dataset.value;
+        trigger.classList.remove('placeholder');
+        hiddenInput.value = opt.dataset.value;
+        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+        closeDropdown();
+      });
+    });
+
+    document.addEventListener('click', function(e){
+      if(!select.contains(e.target)){
+        closeDropdown();
+      }
+    });
+
+    trigger.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        optionsList.classList.contains('show') ? closeDropdown() : openDropdown();
+      }
+      if(e.key === 'Escape'){ closeDropdown(); }
+    });
+  }
+
+  initCustomSelect('paxAdultSelect', 'paxAdultTrigger', 'paxAdultTriggerText', 'paxAdultOptions', 'paxAdultCount');
+  initCustomSelect('paxKidsSelect', 'paxKidsTrigger', 'paxKidsTriggerText', 'paxKidsOptions', 'paxKidsCount');
 </script>
 
 </body>

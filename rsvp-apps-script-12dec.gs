@@ -4,7 +4,10 @@
  * wedding's RSVP sheet and from the gift registry sheet.
  *
  * Sheet: one tab named "RSVP" with header row (row 1):
- *   name | attending | pax | message | submittedAt
+ *   name | attending | paxAdult | paxKids | pax | message | submittedAt
+ *
+ * paxAdult/paxKids are the separate adult/kids counts from the RSVP form;
+ * pax is their sum, kept for convenience.
  *
  * The sheet/tab is created automatically on first submission if missing,
  * so you don't need to set up the header row by hand — just create a
@@ -61,6 +64,8 @@ function doPost(e) {
     sheet.appendRow([
       name,
       e.parameter.attending || '',
+      e.parameter.paxAdult || '0',
+      e.parameter.paxKids || '0',
       e.parameter.pax || '0',
       e.parameter.message || '',
       e.parameter.submittedAt || new Date().toISOString()
@@ -83,7 +88,7 @@ function getSheet() {
   var sheet = ss.getSheetByName('RSVP');
   if (!sheet) {
     sheet = ss.insertSheet('RSVP');
-    sheet.appendRow(['name', 'attending', 'pax', 'message', 'submittedAt']);
+    sheet.appendRow(['name', 'attending', 'paxAdult', 'paxKids', 'pax', 'message', 'submittedAt']);
   }
   return sheet;
 }

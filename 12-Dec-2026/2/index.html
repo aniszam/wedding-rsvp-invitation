@@ -1,0 +1,2128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="light" />
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
+<script>
+  // Head-start: fire the wishes-wall fetch immediately, in parallel with the
+  // rest of the page loading, instead of waiting for the parser to reach the
+  // body script. Apps Script round-trips are slow (cold start + a redirect
+  // hop), so every millisecond of overlap here matters for first-time visitors.
+  window.__GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwqk8fsEY8k2iRC380g1LNUAgsOR0F3cPP_sQYwj7FluJoJ-zYQL_N4R3VvhO0YZabA/exec';
+  window.__wishesFetchPromise = fetch(window.__GOOGLE_SHEET_URL, { method: 'GET' })
+    .then(function(res){ if(!res.ok){ throw new Error('bad response'); } return res.json(); })
+    .catch(function(){ return null; });
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<title>Naufal &amp; Zarith Sofia — RSVP</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Pinyon+Script&family=Tangerine:wght@400;700&family=Tenor+Sans&display=swap');
+
+  :root{
+    color-scheme: light;
+    --ivory: #FAF6EF;
+    --ivory-deep: #F3EDE1;
+    --green: #E3D0A8;
+    --green-deep: #F7ECD6;
+    --rose: #C48A8A;
+    --rose-soft: #E9D6D2;
+    --gold: #d9c298;
+    --purple:#CBA765;
+    --ink: #E7DAC0;
+    --sage: #F3EDE1;
+    --line: rgba(203,167,101,0.4);
+  }
+
+  /* Opaque light panels keep the original dark-on-ivory palette, since the
+     dark floral background only shows through the transparent sections. */
+  .invite, .rsvp-wrap, .wishes-modal, .wish-card, .wishes-arrow {
+    --green: #35452F;
+    --green-deep: #24301F;
+    --gold: #48320c;
+    --purple: #720760;
+    --ink: #3A342C;
+    --line: rgba(53,69,47,0.25);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; overflow-x:hidden; }
+  body{
+    margin:0;
+    max-width:100vw;
+    overflow-x:hidden;
+    background:var(--ivory);
+    color:var(--ink);
+    font-family:'EB Garamond', serif;
+    font-size:18px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .eyebrow{
+    display:inline-block;
+    max-width:100%;
+    font-family:'Tenor Sans', sans-serif;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    font-size:14px;
+    color:var(--gold);
+  }
+
+  .fit-line{
+    display:inline-block;
+    max-width:100%;
+    white-space:nowrap;
+  }
+
+  .underline {
+    width: 200px;
+    height: 0.7px;
+    background-color: var(--gold);
+    margin: 8px auto;
+  }
+
+  h1,h2,h3{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:500;
+    color:var(--green-deep);
+    margin:0;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:48px 24px;
+    overflow:hidden;
+    /* background:radial-gradient(ellipse at 50% -10%, var(--ivory-deep), var(--ivory) 60%); */
+  }
+  .hero-frame{
+    position:relative;
+    max-width:640px;
+    width:100%;
+    padding:64px 28px;
+  }
+  .corner{
+    position:absolute;
+    width:150px;
+    height:150px;
+    opacity:0.85;
+  }
+  .corner svg{ width:100%; height:100%; }
+  .corner.tl{ top:-10px; left:-10px; }
+  .corner.tr{ top:-10px; right:-10px; transform:scaleX(-1); }
+  .corner.bl{ bottom:-10px; left:-10px; transform:scaleY(-1); }
+  .corner.br{ bottom:-10px; right:-10px; transform:scale(-1,-1); }
+
+  .hero .eyebrow{ opacity:0; animation:fadeUp 0.9s ease forwards; animation-delay:0.1s; }
+  .hero .names{
+    font-family:'Pinyon Script', cursive;
+    font-size:clamp(60px, 12vw, 108px);
+    font-weight:400;
+    line-height:1.05;
+    margin:18px 0 10px;
+    opacity:0;
+    animation:fadeUp 1s ease forwards;
+    animation-delay:0.3s;
+  }
+  .hero .names .fit-line{
+    display:inline-block;
+    max-width:100%;
+    white-space:nowrap;
+  }
+  .amp{ color:var(--rose); font-size:0.75em; padding:0 8px; }
+  .hero .sub{
+    font-family:'EB Garamond', serif;
+    font-style:italic;
+    font-size:19px;
+    color:var(--green);
+    opacity:0;
+    animation:fadeUp 1s ease forwards;
+    animation-delay:0.5s;
+  }
+  .hero .date{
+    margin-top:22px;
+    font-family:'Tenor Sans', sans-serif;
+    letter-spacing:0.14em;
+    font-size:15px;
+    color:var(--green-deep);
+    opacity:0;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
+    row-gap:4px;
+    animation:fadeUp 1s ease forwards;
+    animation-delay:0.65s;
+  }
+  @media (max-width:620px){
+    .hero .date{ flex-direction:column; }
+    .hero .date .date-sep{ display:none; }
+  }
+  .divider{
+    width:1px; height:34px; background:var(--line);
+    margin:22px auto;
+  }
+  .scroll-cue{
+    position:absolute;
+    bottom:26px; left:50%; transform:translateX(-50%);
+    font-family:'Tenor Sans', sans-serif;
+    font-size:11px; letter-spacing:0.2em; color:var(--gold);
+    opacity:0.8;
+    animation:bob 2.6s ease-in-out infinite;
+  }
+
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(14px);} to{ opacity:1; transform:translateY(0);} }
+  @keyframes bob{ 0%,100%{ transform:translate(-50%,0);} 50%{ transform:translate(-50%,6px);} }
+
+  /* ---------- INVITATION ---------- */
+  .invite{
+    text-align:center;
+    padding:80px 24px;
+    max-width:640px;
+    margin:0 auto;
+    background:var(--ivory-deep);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .invite-parents{
+    font-family:'Tangerine', cursive;
+    font-size:clamp(32px, 6vw, 50px);
+    font-weight:700;
+    color:var(--green-deep);
+    line-height:1.2;
+    margin-bottom:16px;
+  }
+  .invite-parents p,
+  .invite-parents h4{
+    margin:0;
+  }
+  .invite-parents p + h4{
+    margin-top:6px;
+  }
+  .invite-parents .invite-occasion{
+    font-size:clamp(24px, 4.5vw, 34px);
+    opacity:1;
+  }
+  .invite-parents .and{
+    font-family:'Tenor Sans', sans-serif;
+    font-size:11px;
+    letter-spacing:0.24em;
+    color:var(--gold);
+    margin:12px 0;
+  }
+  .invite-lead{
+    font-style:italic;
+    font-size:18px;
+    color:var(--green);
+    line-height:1.75;
+    margin:0;
+  }
+  .invite-occasion{
+    font-size:17px;
+    color:var(--ink);
+    opacity:0.9;
+    margin:0 0 10px;
+  }
+  .invite-couple{
+    font-family:'Pinyon Script', cursive;
+    font-size:clamp(44px, 8.5vw, 64px);
+    font-weight:400;
+    line-height:1.1;
+    color:var(--green-deep);
+    margin:0;
+  }
+  .invite-meta{
+    margin-top:36px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+  }
+  .invite-meta-item{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+  .invite-meta-label{
+    font-family:'Tenor Sans', sans-serif;
+    font-size:11px;
+    letter-spacing:0.24em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+  .invite-meta-value{
+    font-family:'Cinzel', serif;
+    font-size:22px;
+    color:var(--green-deep);
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{
+    padding:96px 24px;
+    max-width:760px;
+    margin:0 auto;
+  }
+  .section-head{ text-align:center; margin-bottom:40px; }
+  .section-head h2{ font-size:38px; font-style:italic; margin-top:5px; }
+  .flourish{
+    width:64px; height:14px; margin:16px auto 0;
+    opacity:0.6;
+  }
+
+  /* ---------- DETAILS (timeline) ---------- */
+  .card-lace {
+    display: block;
+    width: 98%;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .timeline{
+    position:relative;
+    padding-left:0;
+    list-style:none;
+    margin:0;
+  }
+  .timeline::before{
+    content:'';
+    position:absolute;
+    left:50%; top:0; bottom:0;
+    width:1px;
+    background:var(--line);
+  }
+  .t-item{
+    position:relative;
+    width:50%;
+    padding:0 42px 56px;
+  }
+  .t-item:nth-child(odd){ left:0; text-align:right; }
+  .t-item:nth-child(even){ left:50%; text-align:left; }
+  .t-item::after{
+    content:'';
+    position:absolute;
+    top:6px;
+    width:9px; height:9px;
+    border-radius:50%;
+    background:var(--rose);
+    border:2px solid var(--ivory);
+    box-shadow:0 0 0 1px var(--rose);
+  }
+  .t-item:nth-child(odd)::after{ right:-5px; }
+  .t-item:nth-child(even)::after{ left:-5px; }
+  .t-time{ font-family:'Tenor Sans', sans-serif; letter-spacing:0.1em; font-size:12px; color:var(--gold); }
+  .t-title{ font-family:'Cormorant Garamond', serif; font-size:26px; color:var(--green-deep); margin:6px 0 4px; font-style:italic; }
+  .t-place{ font-size:16px; color:var(--ink); opacity:0.85; }
+
+  @media (max-width:620px){
+    .timeline::before{ left:14px; }
+    .t-item, .t-item:nth-child(odd), .t-item:nth-child(even){
+      width:100%; left:0; text-align:left; padding:0 0 44px 40px;
+    }
+    .t-item:nth-child(odd)::after, .t-item:nth-child(even)::after{ left:9px; }
+  }
+
+  /* ---------- STORY ---------- */
+  .story{
+    text-align:center;
+    font-style:italic;
+    font-size:21px;
+    color:var(--green);
+    line-height:1.75;
+  }
+
+  /* ---------- GALLERY (carousel) ---------- */
+  .carousel{
+    position:relative;
+    width:100%;
+    aspect-ratio:4/3;
+    max-height:560px;
+    border-radius:2px;
+    overflow:hidden;
+    background:var(--ivory-deep);
+    touch-action:pan-y;
+  }
+  .carousel-track{
+    display:flex;
+    width:100%;
+    height:100%;
+    transition:transform .55s cubic-bezier(.65,0,.35,1);
+  }
+  .carousel-slide{
+    flex:0 0 100%;
+    height:100%;
+  }
+  .carousel-slide img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+    filter:sepia(0.12) saturate(0.94) contrast(0.97);
+  }
+  .carousel-arrow{
+    position:absolute;
+    top:50%; transform:translateY(-50%);
+    width:42px; height:42px;
+    border-radius:50%;
+    border:1px solid rgba(250,246,239,0.6);
+    background:rgba(36,48,31,0.45);
+    color:var(--ivory);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    backdrop-filter:blur(2px);
+    transition:background .2s ease;
+    z-index:2;
+  }
+  .carousel-arrow:hover{ background:rgba(36,48,31,0.7); }
+  .carousel-arrow.prev{ left:14px; }
+  .carousel-arrow.next{ right:14px; }
+  .carousel-arrow svg{ width:16px; height:16px; }
+
+  .carousel-dots{
+    display:flex;
+    justify-content:center;
+    gap:9px;
+    margin-top:20px;
+  }
+  .carousel-dots button{
+    width:8px; height:8px;
+    border-radius:50%;
+    border:1px solid var(--gold);
+    background:transparent;
+    padding:0;
+    cursor:pointer;
+    transition:background .2s ease;
+  }
+  .carousel-dots button.active{ background:var(--gold); }
+  .carousel-dots button:focus-visible{ outline:2px solid var(--rose); outline-offset:2px; }
+
+  /* ---------- ATTENDANCE ---------- */
+  .attendance-stats{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:40px;
+    margin:0 0 64px;
+    flex-wrap:wrap;
+  }
+  .attendance-stat{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-width:110px;
+  }
+  .attendance-count{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:52px;
+    line-height:1;
+    color:var(--green-deep);
+  }
+  .attendance-label{
+    margin-top:10px;
+    font-family:'Tenor Sans', sans-serif;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--gold);
+  }
+  .attendance-divider{
+    width:1px; height:48px;
+    background:var(--line);
+  }
+  @media (max-width:480px){
+    .attendance-stats{ gap:26px; }
+    .attendance-count{ font-size:40px; }
+  }
+
+  /* ---------- WELL WISHES ---------- */
+  /* .wishes-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+    gap:22px;
+  }*/
+
+.wishes-grid {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 4px 4px 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* hide scrollbar on Firefox */
+}
+
+.wishes-grid::-webkit-scrollbar {
+  display: none; /* hide scrollbar on Chrome/Safari */
+}
+
+  /*.wish-card{
+    background:var(--ivory-deep);
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:24px 22px;
+    position:relative;
+  } */
+  .wish-card {
+  /* flex: 0 0 auto;
+  width: calc((100% - 2 * 16px) / 3);
+  scroll-snap-align: start; */
+  min-width: 220px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 18px 16px;
+  background: var(--ivory-deep);
+}
+  .wish-card.skeleton{
+    animation: wish-skeleton-pulse 1.3s ease-in-out infinite;
+  }
+  .wish-card.skeleton .wish-text,
+  .wish-card.skeleton .wish-name{
+    height: 12px;
+    border-radius: 4px;
+    background: var(--line);
+  }
+  .wish-card.skeleton .wish-text{ margin-top: 22px; width: 90%; }
+  .wish-card.skeleton .wish-text + .wish-text{ width: 65%; margin-top: 8px; }
+  .wish-card.skeleton .wish-name{ margin-top: 18px; width: 40%; }
+  @keyframes wish-skeleton-pulse{
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  /* .wish-card::before{
+    content:'"';
+    font-family:'Cormorant Garamond', serif;
+    font-size:44px;
+    color:var(--rose);
+    position:absolute;
+    top:2px; left:14px;
+    line-height:1;
+    opacity:0.7;
+  } */
+  .wish-text{
+    font-style:italic;
+    color:var(--ink);
+    padding-top:22px;
+    font-size:17px;
+  }
+  .wish-name{
+    margin-top:14px;
+    font-family:'Tenor Sans', sans-serif;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--purple);
+  }
+  /* .wishes-scroll-wrap {
+  position: relative;
+} */
+
+/*.wish-card {
+  flex: 0 0 auto;
+  width: calc((100% - 5 * 16px) / 6);*/ /* 6 visible cards, adjust gap math if PAGE size changes */
+  /*min-width: 220px;*/ /* fallback so cards don't get too squished on smaller screens */
+  /*scroll-snap-align: start;
+  border: 1px solid var(--line);
+  padding: 18px 16px;
+  background:var(--ivory-deep);
+}*/
+
+/* Fade hint on the right edge to suggest more content */
+.wishes-scroll-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 100%;
+  /* background: linear-gradient(to right, transparent, #fdfaf5); */
+  pointer-events: none;
+}
+
+/* Desktop arrows — hidden by default, shown on hover of the wrap */
+.wishes-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--green-deep);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .2s ease, border-color .2s ease, color .2s ease;
+  z-index: 5;
+}
+
+.wishes-scroll-wrap:hover .wishes-arrow {
+  opacity: 1;
+}
+
+.wishes-arrow:hover {
+  border-color: var(--rose);
+  color: var(--rose);
+}
+
+.wishes-arrow-left { left: -6px; }
+.wishes-arrow-right { right: -6px; }
+
+/* Hide arrows on touch devices — swipe is more natural there */
+@media (hover: none) {
+  .wishes-arrow { display: none; }
+}
+
+@media (max-width: 768px) {
+  .wish-card { width: 78%; } /* show ~1.3 cards on mobile, hints at scrollability */
+}
+
+/* --- See all button --- */
+.wishes-see-all-wrap {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.wishes-see-all-btn {
+  font-family: 'Tenor Sans', sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: var(--green-deep);
+  background: transparent;
+  border: 1px solid var(--green);
+  padding: 10px 28px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease;
+}
+
+.wishes-see-all-btn:hover {
+  border-color: var(--ivory-deep);
+  color: var(--ivory-deep);
+  background-color: var(--rose);
+}
+
+/* --- Modal --- */
+.wishes-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.wishes-modal-overlay.show {
+  display: flex;
+}
+
+.wishes-modal {
+  position: relative;
+  background: #fdfaf5;
+  max-width: 900px;
+  width: 100%;
+  padding: 40px 32px;
+  border-radius: 4px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.wishes-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--green-deep);
+  cursor: pointer;
+  transition: color .2s ease;
+}
+
+.wishes-modal-close:hover {
+  color: var(--rose);
+}
+
+.wishes-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.wishes-modal-grid .wish-card {
+  width: auto;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .wishes-modal-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .wishes-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+  /* ---------- CONTACT ---------- */
+  .contact-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:28px;
+    text-align:center;
+  }
+  .contact-card{
+    padding:24px 14px;
+    /* border-top:1px solid var(--line); */
+  }
+  .contact-role{
+    font-family:'Tenor Sans', sans-serif;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--gold);
+    margin-bottom:10px;
+  }
+  .contact-name{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:24px;
+    color:var(--green-deep);
+    margin-bottom:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:nowrap;
+    gap:8px;
+  }
+  .contact-detail{ font-size:15px; color:var(--ink); opacity:0.85; }
+  @media (max-width:620px){
+    .contact-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ---------- MUSIC TOGGLE ---------- */
+  .music-btn{
+    position:fixed;
+    right:22px; bottom:22px;
+    width:52px; height:52px;
+    border-radius:50%;
+    background:var(--green-deep);
+    border:1px solid var(--gold);
+    color:#3B2518;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    z-index:40;
+    box-shadow:0 4px 14px rgba(36,48,31,0.25);
+    transition:transform .2s ease;
+  }
+  .music-btn:hover{ transform:scale(1.06); }
+  .music-btn svg{ width:20px; height:20px; }
+  .music-btn.playing svg{ animation:spin 4s linear infinite; }
+  @keyframes spin{ from{ transform:rotate(0deg);} to{ transform:rotate(360deg);} }
+
+  /* ---------- RSVP ---------- */
+  .rsvp-wrap{
+    background:var(--sage);
+    border-radius:2px;
+    padding:64px 40px;
+  }
+  form{ max-width:520px; margin:0 auto; }
+  .field{ margin-bottom:26px; }
+  label{
+    display:block;
+    font-family:'Tenor Sans', sans-serif;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--green-deep);
+    margin-bottom:8px;
+  }
+  input[type=text], textarea{
+    width:100%;
+    border:none;
+    border-bottom:1px solid var(--line);
+    background:transparent;
+    font-family:'EB Garamond', serif;
+    font-size:18px;
+    color:var(--ink);
+    padding:8px 2px;
+    outline:none;
+    transition:border-color .25s ease;
+  }
+  input[type=text]:focus, textarea:focus{ border-color:var(--rose); }
+  textarea{ resize:vertical; min-height:70px; }
+
+  .attend-toggle{
+    display:flex; gap:14px;
+  }
+  .attend-toggle input{ position:absolute; opacity:0; pointer-events:none; }
+  .attend-toggle label.opt{
+    flex:1;
+    text-align:center;
+    padding:14px 10px;
+    border:1px solid var(--line);
+    border-radius:2px;
+    cursor:pointer;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:19px;
+    color:var(--green-deep);
+    letter-spacing:0;
+    text-transform:none;
+    transition:all .2s ease;
+    background:var(--ivory);
+  }
+  .attend-toggle input:checked + label.opt{
+    background:var(--rose);
+    border-color:var(--rose);
+    color:#fff;
+  }
+  .attend-toggle input:focus-visible + label.opt{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  #paxField{ display:none; }
+  #paxField.show{ display:block; }
+
+  .seal-btn{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin:38px auto 0;
+    width:118px; height:118px;
+    border-radius:50%;
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    transition:transform .25s ease, filter .25s ease;
+  }
+  .seal-btn-icon{
+    width:150px;
+    height:150px;
+    object-fit:contain;
+    pointer-events:none;
+  }
+  .seal-btn-text{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:14px;
+    color:var(--green-deep);
+    pointer-events:none;
+  }
+  .seal-btn:hover{
+    transform:scale(1.06);
+    filter:brightness(1.15);
+  }
+  .seal-btn:active{
+    transform:scale(0.97);
+    filter:brightness(1.3);
+  }
+  .seal-btn:disabled{
+    opacity:0.6;
+    cursor:default;
+    transform:none;
+    filter:none;
+  }
+  .seal-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:6px; }
+
+  .form-msg{
+    text-align:center;
+    margin-top:18px;
+    font-family:'Tenor Sans', sans-serif;
+    font-size:13px;
+    color:#a5453a;
+    min-height:16px;
+  }
+
+  .thankyou{
+    text-align:center;
+    padding:20px 0 4px;
+  }
+  .thankyou h3{ font-size:32px; font-style:italic; margin-bottom:12px; }
+  .thankyou p{ color:var(--green); }
+
+  select#paxCount{
+    width:100%;
+    border:none;
+    border-bottom:1px solid var(--line);
+    background:transparent;
+    font-family:'EB Garamond', serif;
+    font-size:18px;
+    color:var(--ink);
+    padding:8px 2px;
+    outline:none;
+    transition:border-color .25s ease;
+  }
+  select#paxCount:focus{ border-color:var(--rose); }
+
+  .custom-select {
+  position: relative;
+  width: 100%;
+  font-family: 'EB Garamond', serif;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  font-family: 'EB Garamond', serif;
+  font-size: 18px;
+  color: var(--ink);
+  padding: 8px 2px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color .25s ease;
+}
+
+.custom-select-trigger[aria-expanded="true"],
+.custom-select-trigger:focus {
+  border-color: var(--rose);
+}
+
+.custom-select-trigger.placeholder {
+  color: #999;
+}
+
+.custom-select-trigger svg {
+  stroke: var(--green-deep);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.custom-select-trigger[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.custom-select-options {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background:var(--ivory);
+  border: 1px solid var(--line);
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 20;
+  display: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.custom-select-options.show {
+  display: block;
+}
+
+.custom-select-options li {
+  padding: 10px 14px;
+  font-family: 'EB Garamond', serif;
+  font-size: 17px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease;
+}
+
+.custom-select-options li:hover,
+.custom-select-options li.active {
+  background: var(--rose);
+  color: white;
+}
+
+  /* ---------- COUNTDOWN ---------- */
+  .small-padding {
+    padding: 5px 24px;
+  }
+  .lace {
+    display: block;
+    width: 120%;
+    max-width: none;
+    margin: 0 auto 20px;
+    margin-left: -10%;
+  }
+  .countdown-grid{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+    flex-wrap:wrap;
+  }
+  .cd-unit{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-width:78px;
+  }
+  .cd-number{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:55px;
+    line-height:1;
+    color:var(--green-deep);
+  }
+  .cd-label{
+    margin-top:8px;
+    font-family:'Tenor Sans', sans-serif;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--gold);
+  }
+  .cd-sep{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:40px;
+    color:var(--line);
+    transform:translateY(-8px);
+  }
+  @media (max-width:620px){
+    .countdown-grid{ gap:10px; }
+    .cd-unit{ min-width:60px; }
+    .cd-number{ font-size:38px; }
+    .cd-sep{ font-size:30px; transform:translateY(-6px); }
+  }
+
+  /* ---------- FOOTER / ADMIN ---------- */
+  footer{
+    text-align:center;
+    padding:60px 24px 40px;
+    font-family:'Tenor Sans', sans-serif;
+    font-size:12px;
+    letter-spacing:0.14em;
+    color:var(--gold);
+  }
+  .monogram{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:26px;
+    color:var(--green-deep);
+    margin-bottom:14px;
+    letter-spacing:0.05em;
+  }
+  .admin-link{
+    background:none;
+    border:1px solid var(--gold);
+    border-radius:30px;
+    color:var(--gold); opacity:0.5;
+    font-family:'Tenor Sans', sans-serif;
+    font-size:16px;
+    letter-spacing:0.12em;
+    cursor:pointer;
+    margin-top:22px;
+    padding:8px 20px;
+    text-decoration:none;
+  }
+  .admin-link:hover{ opacity:0.85; }
+
+  #adminPanel{
+    display:none;
+    max-width:760px;
+    margin:0 auto 60px;
+    padding:0 24px;
+  }
+  #adminPanel.show{ display:block; }
+  .admin-box{
+    background:var(--ivory-deep);
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:28px 26px;
+  }
+  .admin-box h3{ font-style:italic; font-size:24px; margin-bottom:4px; }
+  .admin-summary{ font-family:'Tenor Sans', sans-serif; font-size:12px; letter-spacing:0.08em; color:var(--green); margin-bottom:18px; }
+  .admin-row{
+    display:flex; justify-content:space-between; gap:12px;
+    padding:12px 0;
+    border-top:1px solid var(--line);
+    font-size:16px;
+  }
+  .admin-row .who{ font-weight:600; color:var(--green-deep); }
+  .admin-row .meta{ font-family:'Tenor Sans', sans-serif; font-size:12px; color:var(--rose); }
+  .admin-empty{ opacity:0.6; font-style:italic; padding:16px 0; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+  }
+
+  .bg-fixed{
+    position:fixed;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    background-image: url('../../assets/background-floral-dark.jpg');
+    background-size: auto;
+    background-position: center;
+    background-repeat: repeat;
+    z-index:-1;
+  }
+
+  .card-location {
+    display: block;
+    width: 90%;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .route-box{
+    display:inline-flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    width:100px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:6px 4px;
+    text-decoration:none;
+  }
+  .route-box:visited{ color:inherit; }
+  .route-box span{
+    font-family:'Tenor Sans', sans-serif;
+    font-size:11px;
+    letter-spacing:0.04em;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+</style>
+</head>
+<body>
+<div class="bg-fixed"></div>
+<!-- HERO -->
+<div class="hero">
+  <div class="corner tl">
+    <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#AD8A4E" stroke-width="1.4" stroke-linecap="round">
+      <path d="M8,8 C40,10 55,25 60,55 C63,75 55,95 40,105" />
+      <path d="M14,20 C28,18 38,26 40,40" />
+      <path d="M20,40 C34,40 42,50 42,62" />
+      <path d="M10,50 C24,52 30,62 28,74" />
+      <ellipse cx="26" cy="16" rx="7" ry="3.4" transform="rotate(-30 26 16)" fill="#C48A8A" stroke="none" opacity="0.75"/>
+      <ellipse cx="42" cy="34" rx="6" ry="3" transform="rotate(-10 42 34)" fill="#C48A8A" stroke="none" opacity="0.65"/>
+      <ellipse cx="36" cy="58" rx="6" ry="3" transform="rotate(40 36 58)" fill="#8FA37E" stroke="none" opacity="0.7"/>
+      <ellipse cx="22" cy="68" rx="6" ry="3" transform="rotate(70 22 68)" fill="#C48A8A" stroke="none" opacity="0.6"/>
+    </svg>
+  </div>
+  <div class="corner tr">
+    <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#AD8A4E" stroke-width="1.4" stroke-linecap="round">
+      <path d="M8,8 C40,10 55,25 60,55 C63,75 55,95 40,105" />
+      <path d="M14,20 C28,18 38,26 40,40" />
+      <path d="M20,40 C34,40 42,50 42,62" />
+      <path d="M10,50 C24,52 30,62 28,74" />
+      <ellipse cx="26" cy="16" rx="7" ry="3.4" transform="rotate(-30 26 16)" fill="#C48A8A" stroke="none" opacity="0.75"/>
+      <ellipse cx="42" cy="34" rx="6" ry="3" transform="rotate(-10 42 34)" fill="#C48A8A" stroke="none" opacity="0.65"/>
+      <ellipse cx="36" cy="58" rx="6" ry="3" transform="rotate(40 36 58)" fill="#8FA37E" stroke="none" opacity="0.7"/>
+      <ellipse cx="22" cy="68" rx="6" ry="3" transform="rotate(70 22 68)" fill="#C48A8A" stroke="none" opacity="0.6"/>
+    </svg>
+  </div>
+  <div class="corner bl">
+    <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#AD8A4E" stroke-width="1.4" stroke-linecap="round">
+      <path d="M8,8 C40,10 55,25 60,55 C63,75 55,95 40,105" />
+      <path d="M14,20 C28,18 38,26 40,40" />
+      <ellipse cx="26" cy="16" rx="7" ry="3.4" transform="rotate(-30 26 16)" fill="#8FA37E" stroke="none" opacity="0.7"/>
+      <ellipse cx="42" cy="34" rx="6" ry="3" transform="rotate(-10 42 34)" fill="#C48A8A" stroke="none" opacity="0.6"/>
+    </svg>
+  </div>
+  <div class="corner br">
+    <svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#AD8A4E" stroke-width="1.4" stroke-linecap="round">
+      <path d="M8,8 C40,10 55,25 60,55 C63,75 55,95 40,105" />
+      <path d="M14,20 C28,18 38,26 40,40" />
+      <ellipse cx="26" cy="16" rx="7" ry="3.4" transform="rotate(-30 26 16)" fill="#8FA37E" stroke="none" opacity="0.7"/>
+      <ellipse cx="42" cy="34" rx="6" ry="3" transform="rotate(-10 42 34)" fill="#C48A8A" stroke="none" opacity="0.6"/>
+    </svg>
+  </div>
+
+  <div class="hero-frame">
+    <div class="eyebrow">Majlis Raikan Cinta</div>
+    <h1 class="names"><span class="fit-line">Naufal <br><span class="amp">&amp;</span></span><br><span class="fit-line">Zarith Sofia</span></h1> <br>
+    <div class="sub">membina ikatan cinta, keluarga yang dirahmati dan diberkati olehNya.</div>
+    <div class="divider"></div>
+    <div class="date"><span class="date-day">12 DISEMBER, 2026</span><span class="date-sep"> &middot; </span><span class="date-venue">TIFFANY HALL, BORAOMBAK SIGNATURE MINES</span></div>
+  </div>
+  <div class="scroll-cue">Borang RSVP di bawah</div>
+</div>
+
+<!-- INVITATION -->
+<section class="invite" id="invitation">
+  <p class="invite-occasion"> Kami, </p>
+  <div class="invite-parents">
+    <h4>Yazaly bin Yahya<br> &amp; <br>Filza binti Zainal Abidin<br> <p class="invite-occasion"> bersama</p> Wan Nur Suhaila binti Wan Abdullah</h4>
+  </div>
+  <p class="invite-lead">dengan penuh rasa kesyukuran menjemput<br>Dato' / Datin / Tuan / Puan / Encik / Cik</p>
+  <p class="invite-occasion">dan seisi keluarga hadir ke majlis perkahwinan putera kami dan pilihan hatinya</p>
+  <br>
+  <p class="invite-couple">Muhammad Naufal<br><span class="amp">&amp;</span><br>N.A. Zarith Sofia</p>
+  <div class="invite-meta">
+    <div class="invite-meta-item">
+      <span class="invite-meta-label">Tempat</span>
+      <span class="invite-meta-value">Tiffany Hall, BoraOmbak Signature @ Mines</span>
+    </div>
+    <div class="invite-meta-item">
+      <span class="invite-meta-label">Tarikh</span>
+      <span class="invite-meta-value">Sabtu, 12 Disember 2026</span>
+    </div>
+    <div class="invite-meta-item">
+      <span class="invite-meta-label">Masa</span>
+      <span class="invite-meta-value">11 AM - 4 PM</span>
+    </div>
+    <div class="invite-meta-item">
+      <span class="invite-meta-label">Kod Pakaian</span>
+      <span class="invite-meta-value">Tradisional / Smart Casual</span>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section>
+  <p class="story">
+    "And among His signs is that He created for you spouses from among yourselves so that you may find tranquility in them; and He placed between you affection and mercy."<br class="story-br">
+    — Surah Ar-Rum (30:21)
+  </p>
+</section>
+
+<img src="../../assets/card-w-contents.png" class="card-lace">
+<br><br>
+<!-- DETAILS -->
+<!-- <section>
+  <div class="section-head">
+    <div class="eyebrow">Majlis Resespsi</div>
+    <h2>Aturcara Majlis</h2>
+  </div>
+  <ul class="timeline">
+    <li class="t-item">
+      <div class="t-time">11:00 AM</div>
+      <div class="t-title">Kehadiran tetamu</div>
+    </li>
+    <li class="t-item">
+      <div class="t-time">12:30 PM</div>
+      <div class="t-title">Ketibaan Pengantin</div>
+    </li>
+    <li class="t-item">
+      <div class="t-time">2:00 PM</div>
+      <div class="t-title">Sesi Fotografi</div>
+    </li>
+    <li class="t-item">
+      <div class="t-time">3:30 PM</div>
+      <div class="t-title">Majlis Bersurai</div>
+    </li>
+  </ul>
+</section> -->
+
+<!-- COUNTDOWN -->
+<section class="small-padding" id="countdown">
+  <img src="../../assets/lace.png" class="lace" alt="">
+  <div class="section-head">
+    <div class="eyebrow"><span class="fit-line">Meraikan Majlis</span> <span class="fit-line">Bahagia Kami</span></div>
+    <div class="underline"></div>
+    <h2>Kiraan Detik</h2>
+  </div>
+  <div class="countdown-grid" id="countdownGrid">
+    <div class="cd-unit">
+      <div class="cd-number" id="cdDays">00</div>
+      <div class="cd-label">Hari</div>
+    </div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit">
+      <div class="cd-number" id="cdHours">00</div>
+      <div class="cd-label">Jam</div>
+    </div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit">
+      <div class="cd-number" id="cdMinutes">00</div>
+      <div class="cd-label">Minit</div>
+    </div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit">
+      <div class="cd-number" id="cdSeconds">00</div>
+      <div class="cd-label">Saat</div>
+    </div>
+  </div>
+  <img src="../../assets/lace.png" class="lace" alt="">
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-head">
+    <div class="eyebrow">Kenangan</div>
+    <div class="underline"></div>
+    <h2>Galeri</h2>
+  </div>
+  <div class="carousel" id="carousel">
+    <div class="carousel-track" id="carouselTrack">
+      <div class="carousel-slide"><img src="../../assets/convo-naufal.jpg" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="../../assets/convo-zarith.jpg" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="../../assets/abah-mummy.jpg" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="../../assets/mama.jpg" alt="" loading="lazy"></div>
+      <div class="carousel-slide"><img src="../../assets/5.JPG" alt="" loading="lazy"></div>
+    </div>
+    <button class="carousel-arrow prev" id="carouselPrev" aria-label="Previous photo" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="carousel-arrow next" id="carouselNext" aria-label="Next photo" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+  <div class="carousel-dots" id="carouselDots"></div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-head">
+    <div class="eyebrow">Ahli Majlis</div>
+    <div class="underline"></div>
+    <h2>Hubungi</h2>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-card">
+      <div class="contact-role">Ayah</div>
+      <div class="underline" style="width: 150px;"></div>
+      <div class="contact-name">
+        Yazaly
+        <a href="https://wa.me/60122161292" target="_blank" aria-label="Chat on WhatsApp">
+          <img src="../../assets/whatsapp.png" style="width:25px; height:25px;">
+          <!-- <i class="fa-brands fa-whatsapp" style="color:#25D366; margin-left:8px;"></i> -->
+        </a>
+      </div>
+      <!-- <div class="contact-detail">0176958195</div> -->
+    </div>
+    <div class="contact-card">
+      <div class="contact-role">Ibu</div>
+      <div class="underline" style="width: 150px;"></div>
+      <div class="contact-name">
+        Filza
+        <a href="https://wa.me/60192638371" target="_blank" aria-label="Chat on WhatsApp">
+          <img src="../../assets/whatsapp.png" style="width:25px; height:25px;">
+          <!-- <i class="fa-brands fa-whatsapp" style="color:#25D366; margin-left:8px;"></i> -->
+        </a>
+      </div>
+      <!-- <div class="contact-detail">0193485479</div> -->
+    </div>
+    <div class="contact-card">
+      <div class="contact-role">Ibu</div>
+      <div class="underline" style="width: 150px;"></div>
+      <div class="contact-name">
+        Suhaila
+        <a href="https://wa.me/601121783245" target="_blank" aria-label="Chat on WhatsApp">
+          <img src="../../assets/whatsapp.png" style="width:25px; height:25px;">
+          <!-- <i class="fa-brands fa-whatsapp" style="color:#25D366; margin-left:8px;"></i> -->
+        </a>
+      </div>
+      <!-- <div class="contact-detail">0193485479</div> -->
+    </div>
+    <div class="contact-card">
+      <div class="contact-role">Kakak</div>
+      <div class="underline" style="width: 150px;"></div>
+      <div class="contact-name">
+        Syuhada
+        <a href="https://wa.me/60183502963" target="_blank" aria-label="Chat on WhatsApp">
+          <img src="../../assets/whatsapp.png" style="width:25px; height:25px;">
+          <!-- <i class="fa-brands fa-whatsapp" style="color:#25D366; margin-left:8px;"></i> -->
+        </a>
+      </div>
+      <!-- <div class="contact-detail">0124854083</div> -->
+    </div>
+  </div>
+
+  <!-- <div class="section-head">
+    <h2>Lokasi</h2>
+  </div> -->
+  <br><br>
+  <img src="../../assets/location-mines.png" class="card-location">
+  <!-- <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; width:100%; border:1px solid var(--line); border-radius:8px; padding:16px 20px;"> -->
+    <br><br>
+    <div class="section-head">
+      <div class="eyebrow">Panduan ke Lokasi</div>
+      <div class="underline"></div>
+      <h2>Rujukan</h2>
+    </div>
+    <div style="display:flex; align-items:stretch; justify-content:center; gap:8px;">
+      <a href="https://waze.com/ul?q=Tiffany%20Hall%20BoraOmbak%20Signature%20Mines&navigate=yes" target="_blank" aria-label="Navigate with Waze" class="route-box">
+        <img src="../../assets/waze.png" alt="Waze" style="width:50px; height:50px; display:block;">
+        <span>Waze</span>
+      </a>
+      <a href="https://maps.app.goo.gl/ob4d2sExCzmq3DbE6" target="_blank" aria-label="Navigate with Google Maps" class="route-box">
+        <img src="../../assets/google.png" alt="Google Maps" style="width:50px; height:50px; display:block;">
+        <span>Google Maps</span>
+      </a>
+      <a href="https://maps.apple.com/p/o32x3QIRQ.SK2N" target="_blank" aria-label="Navigate with Apple Maps" class="route-box">
+        <img src="../../assets/apple.png" alt="Apple Maps" style="width:50px; height:50px; display:block;">
+        <span>Apple Maps</span>
+      </a>
+    </div>
+<!-- </div> -->
+</section>
+
+
+<!-- RSVP -->
+<section id="rsvp">
+  <div class="section-head">
+    <div class="eyebrow">Mohon maklum balas</div>
+    <div class="underline"></div>
+    <h2>RSVP</h2>
+  </div>
+
+  <div class="rsvp-wrap">
+    <form id="rsvpForm">
+      <div class="field">
+        <label for="guestName">Nama</label>
+        <input type="text" id="guestName" placeholder="e.g. Azira" required />
+      </div>
+
+      <div class="field">
+        <label>Kehadiran?</label>
+        <div class="attend-toggle" role="radiogroup" aria-label="Attendance">
+          <input type="radio" name="attend" id="attendYes" value="yes" />
+          <label class="opt" for="attendYes">Ya.</label>
+          <input type="radio" name="attend" id="attendNo" value="no" />
+          <label class="opt" for="attendNo">Tidak.</label>
+        </div>
+      </div>
+
+      <!-- <div class="field" id="paxField">
+        <label for="paxCount">Bilangan tetamu</label>
+        <select id="paxCount">
+          <option for="paxCount" value="">Sila pilih</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </div> -->
+
+      <div id="paxField">
+        <div class="field">
+          <label for="paxAdultCount">Bilangan Dewasa</label>
+          <div class="custom-select" id="paxAdultSelect">
+            <button type="button" class="custom-select-trigger" id="paxAdultTrigger" aria-haspopup="listbox" aria-expanded="false">
+              <span id="paxAdultTriggerText">Sila pilih</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <ul class="custom-select-options" id="paxAdultOptions" role="listbox" tabindex="-1">
+              <li role="option" data-value="1">1</li>
+              <li role="option" data-value="2">2</li>
+              <li role="option" data-value="3">3</li>
+              <li role="option" data-value="4">4</li>
+              <li role="option" data-value="5">5</li>
+              <li role="option" data-value="6">6</li>
+            </ul>
+            <input type="hidden" id="paxAdultCount" name="paxAdultCount">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="paxKidsCount">Bilangan Kanak-kanak (umur 3 - 12 tahun)</label>
+          <div class="custom-select" id="paxKidsSelect">
+            <button type="button" class="custom-select-trigger" id="paxKidsTrigger" aria-haspopup="listbox" aria-expanded="false">
+              <span id="paxKidsTriggerText">Sila pilih</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <ul class="custom-select-options" id="paxKidsOptions" role="listbox" tabindex="-1">
+              <li role="option" data-value="0">0</li>
+              <li role="option" data-value="1">1</li>
+              <li role="option" data-value="2">2</li>
+              <li role="option" data-value="3">3</li>
+              <li role="option" data-value="4">4</li>
+              <li role="option" data-value="5">5</li>
+              <li role="option" data-value="6">6</li>
+            </ul>
+            <input type="hidden" id="paxKidsCount" name="paxKidsCount">
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="guestMsg">Ucapan</label>
+        <textarea id="guestMsg" placeholder="Tahniah...."></textarea>
+      </div>
+
+      <button type="submit" class="seal-btn" id="submitBtn">
+        <img src="../../assets/pink-heart.png" alt="" class="seal-btn-icon" />
+      </button>
+      <div class="form-msg" id="formMsg"></div>
+    </form>
+
+    <div class="thankyou" id="thankYou" style="display:none;">
+      <h3 id="thankYouTitle">Terima kasih.</h3>
+      <p id="thankYouBody">Jumpa anda pada hari bahagia kami.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WELL WISHES -->
+<section id="wishes">
+  <div class="section-head">
+    <div class="eyebrow">Daripada Tetamu</div>
+    <div class="underline"></div>
+    <h2>Kehadiran</h2>
+  </div>
+  <div class="attendance-stats" id="attendanceStats">
+    <div class="attendance-stat">
+      <div class="attendance-count" id="attendCountYes">0</div>
+      <div class="attendance-label">Hadir</div>
+    </div>
+    <div class="attendance-divider"></div>
+    <div class="attendance-stat">
+      <div class="attendance-count" id="attendCountNo">0</div>
+      <div class="attendance-label">Tidak Hadir</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div class="eyebrow">Daripada Tetamu</div>
+    <div class="underline"></div>
+    <h2>Ucapan</h2>
+  </div>
+  <!-- <div id="wishesList" class="wishes-grid">
+    <div class="admin-empty">Tinggalkan mesej di ruangan RSVP.</div>
+  </div> -->
+  <div class="wishes-scroll-wrap">
+    <div id="wishesList" class="wishes-grid">
+      <div class="admin-empty">Tinggalkan mesej di ruangan RSVP.</div>
+    </div>
+    <button type="button" class="wishes-arrow wishes-arrow-left" id="wishesArrowLeft" aria-label="Scroll left">&larr;</button>
+    <button type="button" class="wishes-arrow wishes-arrow-right" id="wishesArrowRight" aria-label="Scroll right">&rarr;</button>
+  </div>
+
+  <div class="wishes-see-all-wrap">
+    <button type="button" id="wishesSeeAllBtn" class="wishes-see-all-btn">Lihat semua</button>
+  </div>
+</section>
+
+<!-- Modal -->
+<div class="wishes-modal-overlay" id="wishesModalOverlay">
+  <div class="wishes-modal">
+    <button type="button" class="wishes-modal-close" id="wishesModalClose" aria-label="Close">&times;</button>
+    <div class="section-head" style="margin-bottom:24px;">
+      <div class="eyebrow">Daripada Tetamu</div>
+      <div class="underline"></div>
+      <h2>Semua Ucapan</h2>
+    </div>
+    <div id="wishesModalGrid" class="wishes-modal-grid"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="monogram">N &amp; ZS</div>
+  <div>#NauFallForZarith &nbsp;·&nbsp; 12 DISEMBER, 2026</div>
+  <div>Lovingly coded by Zarith Sofia</div>
+  <!-- <button class="admin-link" id="adminToggle">couple's view</button> -->
+</footer>
+
+<button id="musicToggle" class="music-btn" aria-label="Play background music" aria-pressed="false" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 18V5l12-2v13"></path>
+    <circle cx="6" cy="18" r="3"></circle>
+    <circle cx="18" cy="16" r="3"></circle>
+  </svg>
+</button>
+<audio id="bgMusic" loop preload="none">
+  <source src="../../assets/tulus.mp3" type="audio/mpeg">
+</audio>
+
+<!-- <div id="adminPanel">
+  <div class="admin-box">
+    <h3>All Responses</h3>
+    <div class="admin-summary" id="adminSummary">Loading…</div>
+    <div id="adminList"></div>
+  </div>
+</div> -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    const WEDDING_DATE = new Date('2026-12-12T11:00:00');
+
+    const elDays = document.getElementById('cdDays');
+    const elHours = document.getElementById('cdHours');
+    const elMinutes = document.getElementById('cdMinutes');
+    const elSeconds = document.getElementById('cdSeconds');
+
+    function pad(n){ return String(n).padStart(2, '0'); }
+
+    function update(){
+      const now = new Date();
+      let diff = WEDDING_DATE - now;
+
+      if(diff <= 0){
+        elDays.textContent = '00';
+        elHours.textContent = '00';
+        elMinutes.textContent = '00';
+        elSeconds.textContent = '00';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      diff -= days * (1000 * 60 * 60 * 24);
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      diff -= hours * (1000 * 60 * 60);
+      const minutes = Math.floor(diff / (1000 * 60));
+      diff -= minutes * (1000 * 60);
+      const seconds = Math.floor(diff / 1000);
+
+      elDays.textContent = pad(days);
+      elHours.textContent = pad(hours);
+      elMinutes.textContent = pad(minutes);
+      elSeconds.textContent = pad(seconds);
+    }
+
+    update();
+    setInterval(update, 1000);
+  });
+
+(function(){
+  function fitHeroNames(){
+    document.querySelectorAll('.names').forEach(function(namesEl){
+      namesEl.style.fontSize = '';
+      var minRatio = 1;
+      namesEl.querySelectorAll('.fit-line').forEach(function(el){
+        var ratio = el.clientWidth / el.scrollWidth;
+        if (ratio < minRatio) minRatio = ratio;
+      });
+      if (minRatio < 1) {
+        var base = parseFloat(getComputedStyle(namesEl).fontSize);
+        namesEl.style.fontSize = (base * minRatio * 0.97) + 'px';
+      }
+    });
+  }
+  window.addEventListener('load', fitHeroNames);
+  window.addEventListener('resize', fitHeroNames);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(fitHeroNames);
+  }
+})();
+
+(function(){
+  function fitUnderlines(){
+    document.querySelectorAll('.section-head').forEach(function(head){
+      var eyebrow = head.querySelector(':scope > .eyebrow');
+      var underline = head.querySelector(':scope > .underline');
+      if (!eyebrow || !underline || eyebrow.offsetParent === null) return;
+      var lines = eyebrow.querySelectorAll('.fit-line');
+      var width = 0;
+      if (lines.length) {
+        lines.forEach(function(l){ width = Math.max(width, l.getBoundingClientRect().width); });
+      } else {
+        width = eyebrow.getBoundingClientRect().width;
+      }
+      if (width > 0) underline.style.width = Math.round(width) + 'px';
+    });
+  }
+  window.fitUnderlines = fitUnderlines;
+  window.addEventListener('load', fitUnderlines);
+  window.addEventListener('resize', fitUnderlines);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(fitUnderlines);
+  }
+})();
+
+(function(){
+  // Paste your deployed Google Apps Script Web App URL here to also log
+  // every RSVP into a Google Sheet. Leave blank to skip that step.
+  // (Kept in sync with the head-start fetch in <head> — see window.__GOOGLE_SHEET_URL.)
+  const CONFIG = {
+    GOOGLE_SHEET_URL: window.__GOOGLE_SHEET_URL || 'https://script.google.com/macros/s/AKfycbwqk8fsEY8k2iRC380g1LNUAgsOR0F3cPP_sQYwj7FluJoJ-zYQL_N4R3VvhO0YZabA/exec'
+  };
+
+  const attendYes = document.getElementById('attendYes');
+  const attendNo = document.getElementById('attendNo');
+  const paxField = document.getElementById('paxField');
+  const paxAdultCount = document.getElementById('paxAdultCount');
+  const paxKidsCount = document.getElementById('paxKidsCount');
+  const form = document.getElementById('rsvpForm');
+  const formMsg = document.getElementById('formMsg');
+  const submitBtn = document.getElementById('submitBtn');
+  const thankYou = document.getElementById('thankYou');
+  const thankYouTitle = document.getElementById('thankYouTitle');
+  const thankYouBody = document.getElementById('thankYouBody');
+
+  function syncPax(){
+    if(attendYes.checked){
+      paxField.classList.add('show');
+    } else {
+      paxField.classList.remove('show');
+    }
+  }
+  attendYes.addEventListener('change', syncPax);
+  attendNo.addEventListener('change', syncPax);
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    formMsg.textContent = '';
+
+    const name = document.getElementById('guestName').value.trim();
+    const attending = attendYes.checked ? 'yes' : (attendNo.checked ? 'no' : '');
+    const paxAdult = paxAdultCount.value.trim();
+    const paxKids = paxKidsCount.value.trim();
+    const msg = document.getElementById('guestMsg').value.trim();
+
+    if(!name){ formMsg.textContent = 'Please share your name.'; return; }
+    if(!attending){ formMsg.textContent = 'Please let us know if you can attend.'; return; }
+    if(attending === 'yes' && (!paxAdult || isNaN(paxAdult) || Number(paxAdult) < 1)){
+      formMsg.textContent = 'Sila pilih bilangan dewasa.';
+      return;
+    }
+    if(attending === 'yes' && (paxKids === '' || isNaN(paxKids) || Number(paxKids) < 0)){
+      formMsg.textContent = 'Sila pilih bilangan kanak-kanak.';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    const entry = {
+      name: name,
+      attending: attending,
+      paxAdult: attending === 'yes' ? Number(paxAdult) : 0,
+      paxKids: attending === 'yes' ? Number(paxKids) : 0,
+      pax: attending === 'yes' ? (Number(paxAdult) + Number(paxKids)) : 0,
+      message: msg,
+      submittedAt: new Date().toISOString()
+    };
+
+    const hasClaudeStorage = (typeof window.storage !== 'undefined');
+    let savedSomewhere = false;
+
+    // Primary path once deployed outside Claude: Google Sheet
+    if(CONFIG.GOOGLE_SHEET_URL){
+      const sheetOk = await sendToGoogleSheet(entry);
+      savedSomewhere = savedSomewhere || sheetOk;
+    }
+
+    // Bonus path while previewing inside Claude: built-in storage
+    if(hasClaudeStorage){
+      try{
+        const key = 'rsvp:' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+        const result = await window.storage.set(key, JSON.stringify(entry), true);
+        savedSomewhere = savedSomewhere || !!result;
+      } catch(err){ /* fall through to sheet result */ }
+    }
+
+    if(!savedSomewhere){
+      formMsg.textContent = CONFIG.GOOGLE_SHEET_URL
+        ? 'Something went wrong sending your response — please try again.'
+        : 'RSVP storage isn\'t set up yet — add your Google Sheet URL in CONFIG.';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Seal & Send';
+      return;
+    }
+
+    form.style.display = 'none';
+    thankYou.style.display = 'block';
+    if(attending === 'yes'){
+      thankYouTitle.textContent = 'Terima kasih, ' + name.split(' ')[0] + ' atas RSVP anda.';
+      thankYouBody.textContent = 'Kami amat menghargai kesudian anda untuk bersama-sama meraikan hari bahagia kami 🤍';
+    } else {
+      thankYouTitle.textContent = 'Terima kasih, ' + name.split(' ')[0] +' atas maklum balas anda.';
+      thankYouBody.textContent = 'Walaupun tidak dapat hadir, doa dan ucapan anda tetap bermakna buat kami 🤍';
+    }
+    if(msg){ loadWishes(); }
+    loadAttendanceStats();
+  });
+
+  // Sends the RSVP to a deployed Google Apps Script web app so it lands as a
+  // row in a Google Sheet. Returns true/false so the caller knows whether the
+  // RSVP was actually saved (important once window.storage is unavailable).
+  async function sendToGoogleSheet(entry){
+    if(!CONFIG.GOOGLE_SHEET_URL){ return false; }
+    try{
+      const body = new URLSearchParams({
+        name: entry.name,
+        attending: entry.attending,
+        paxAdult: String(entry.paxAdult),
+        paxKids: String(entry.paxKids),
+        pax: String(entry.pax),
+        message: entry.message,
+        submittedAt: entry.submittedAt
+      });
+      const res = await fetch(CONFIG.GOOGLE_SHEET_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
+      });
+      return res.ok;
+    } catch(err){
+      return false;
+    }
+  }
+
+  // Reads every RSVP back, from the Google Sheet when deployed, or from
+  // window.storage when previewing inside Claude. Used by both the Well
+  // Wishes wall and the couple's admin view.
+  async function fetchAllRSVPs(){
+    // Use the fetch kicked off from <head> on first call — it's had a head
+    // start on network latency. Later calls (if any) go through fetch fresh.
+    if(window.__wishesFetchPromise){
+      const headStart = window.__wishesFetchPromise;
+      window.__wishesFetchPromise = null;
+      const data = await headStart;
+      if(Array.isArray(data)){ return data; }
+    }
+
+    if(CONFIG.GOOGLE_SHEET_URL){
+      try{
+        const res = await fetch(CONFIG.GOOGLE_SHEET_URL, { method: 'GET' });
+        if(!res.ok){ throw new Error('bad response'); }
+        const data = await res.json();
+        return Array.isArray(data) ? data : [];
+      } catch(err){
+        return [];
+      }
+    }
+
+    if(typeof window.storage !== 'undefined'){
+      try{
+        const listResult = await window.storage.list('rsvp:', true);
+        const keys = (listResult && listResult.keys) ? listResult.keys : [];
+        const entries = [];
+        for(const k of keys){
+          try{
+            const r = await window.storage.get(k, true);
+            if(r && r.value){ entries.push(JSON.parse(r.value)); }
+          } catch(e){ /* skip unreadable entry */ }
+        }
+        return entries;
+      } catch(err){
+        return [];
+      }
+    }
+
+    return [];
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  // --- Well wishes: compact scrollable strip + "Lihat semua" modal ---
+  const wishesList = document.getElementById('wishesList');
+  const wishesArrowLeft = document.getElementById('wishesArrowLeft');
+  const wishesArrowRight = document.getElementById('wishesArrowRight');
+  const wishesSeeAllBtn = document.getElementById('wishesSeeAllBtn');
+  const wishesModalOverlay = document.getElementById('wishesModalOverlay');
+  const wishesModalClose = document.getElementById('wishesModalClose');
+  const wishesModalGrid = document.getElementById('wishesModalGrid');
+
+  let allWishEntries = [];
+  const WISHES_CACHE_KEY = 'rsvpWishesCache';
+
+  function buildWishCard(e){
+    const card = document.createElement('div');
+    card.className = 'wish-card';
+    card.innerHTML = '<div class="wish-text">' + escapeHtml(e.message) + '</div>' +
+      '<div class="wish-name">' + escapeHtml(e.name) + '</div>';
+    return card;
+  }
+
+  function renderWishesSkeleton(){
+    wishesList.innerHTML = '';
+    for(let i = 0; i < 4; i++){
+      const card = document.createElement('div');
+      card.className = 'wish-card skeleton';
+      card.innerHTML = '<div class="wish-text"></div><div class="wish-text"></div><div class="wish-name"></div>';
+      wishesList.appendChild(card);
+    }
+  }
+
+  function renderWishes(entries){
+    if(entries.length === 0){
+      wishesList.innerHTML = '<div class="admin-empty">Tinggalkan mesej di ruangan RSVP.</div>';
+      return;
+    }
+    allWishEntries = entries;
+    wishesList.innerHTML = '';
+    entries.forEach(e => wishesList.appendChild(buildWishCard(e)));
+  }
+
+  function readWishesCache(){
+    try{
+      const raw = localStorage.getItem(WISHES_CACHE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch(err){ return null; }
+  }
+
+  function writeWishesCache(entries){
+    try{ localStorage.setItem(WISHES_CACHE_KEY, JSON.stringify(entries)); } catch(err){ /* storage unavailable */ }
+  }
+
+  // Stale-while-revalidate: paint instantly from the last cached fetch (if any),
+  // then hit the Apps Script endpoint in the background — it's slow (redirect +
+  // cold start) — and only touch the DOM again if the data actually changed.
+  async function loadWishes(){
+    const cached = readWishesCache();
+    if(cached){
+      renderWishes(cached);
+    } else {
+      renderWishesSkeleton();
+    }
+
+    const fresh = (await fetchAllRSVPs()).filter(e => e.message);
+    fresh.sort((a,b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+
+    if(fresh.length === 0 && cached){ return; } // keep showing cache if a fetch/read failed
+
+    if(!cached || JSON.stringify(fresh) !== JSON.stringify(cached)){
+      renderWishes(fresh);
+    }
+    writeWishesCache(fresh);
+  }
+  loadWishes();
+
+  // --- Kehadiran: live Hadir / Tidak Hadir counts ---
+  const attendCountYes = document.getElementById('attendCountYes');
+  const attendCountNo = document.getElementById('attendCountNo');
+
+  async function loadAttendanceStats(){
+    const entries = await fetchAllRSVPs();
+    const yesEntries = entries.filter(e => e.attending === 'yes');
+    const noCount = entries.filter(e => e.attending === 'no').length;
+
+    const totalGuests = yesEntries.reduce(function(sum, e){
+      const pax = Number(e.pax);
+      if(!isNaN(pax)){ return sum + pax; }
+      const adults = Number(e.paxAdult) || 0;
+      const kids = Number(e.paxKids) || 0;
+      return sum + adults + kids;
+    }, 0);
+
+    attendCountYes.textContent = totalGuests;
+    attendCountNo.textContent = noCount;
+  }
+  loadAttendanceStats();
+
+  function scrollWishes(direction){
+    const card = wishesList.querySelector('.wish-card');
+    if(!card) return;
+    const cardWidth = card.getBoundingClientRect().width + 16;
+    wishesList.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+  }
+  wishesArrowLeft.addEventListener('click', () => scrollWishes(-1));
+  wishesArrowRight.addEventListener('click', () => scrollWishes(1));
+
+  function openWishesModal(){
+    wishesModalGrid.innerHTML = '';
+    allWishEntries.forEach(e => wishesModalGrid.appendChild(buildWishCard(e)));
+    wishesModalOverlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    if (window.fitUnderlines) window.fitUnderlines();
+  }
+
+  function closeWishesModal(){
+    wishesModalOverlay.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  wishesSeeAllBtn.addEventListener('click', openWishesModal);
+  wishesModalClose.addEventListener('click', closeWishesModal);
+  wishesModalOverlay.addEventListener('click', function(e){
+    if(e.target === wishesModalOverlay){ closeWishesModal(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && wishesModalOverlay.classList.contains('show')){
+      closeWishesModal();
+    }
+  });
+
+  // Gallery carousel: autoplay every 3s, arrows, dots, swipe/drag
+  const carousel = document.getElementById('carousel');
+  const track = document.getElementById('carouselTrack');
+  const slides = track ? Array.from(track.children) : [];
+  const dotsWrap = document.getElementById('carouselDots');
+  const prevBtn = document.getElementById('carouselPrev');
+  const nextBtn = document.getElementById('carouselNext');
+  let current = 0;
+  let autoplayTimer = null;
+
+  if(track && slides.length){
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', 'Go to photo ' + (i + 1));
+      if(i === 0){ dot.classList.add('active'); }
+      dot.addEventListener('click', () => goTo(i, true));
+      dotsWrap.appendChild(dot);
+    });
+
+    function render(){
+      track.style.transform = 'translateX(-' + (current * 100) + '%)';
+      Array.from(dotsWrap.children).forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    function goTo(index, userTriggered){
+      current = (index + slides.length) % slides.length;
+      render();
+      if(userTriggered){ restartAutoplay(); }
+    }
+
+    function next(userTriggered){ goTo(current + 1, userTriggered); }
+    function prev(userTriggered){ goTo(current - 1, userTriggered); }
+
+    function startAutoplay(){
+      autoplayTimer = setInterval(() => next(false), 3000);
+    }
+    function restartAutoplay(){
+      clearInterval(autoplayTimer);
+      startAutoplay();
+    }
+
+    prevBtn.addEventListener('click', () => prev(true));
+    nextBtn.addEventListener('click', () => next(true));
+
+    carousel.addEventListener('mouseenter', () => clearInterval(autoplayTimer));
+    carousel.addEventListener('mouseleave', () => startAutoplay());
+
+    // Swipe / drag support
+    let startX = 0, deltaX = 0, dragging = false;
+
+    function dragStart(x){ dragging = true; startX = x; deltaX = 0; clearInterval(autoplayTimer); }
+    function dragMove(x){ if(!dragging){ return; } deltaX = x - startX; }
+    function dragEnd(){
+      if(!dragging){ return; }
+      dragging = false;
+      if(Math.abs(deltaX) > 40){
+        deltaX < 0 ? next(true) : prev(true);
+      } else {
+        startAutoplay();
+      }
+      deltaX = 0;
+    }
+
+    carousel.addEventListener('touchstart', e => dragStart(e.touches[0].clientX), { passive:true });
+    carousel.addEventListener('touchmove', e => dragMove(e.touches[0].clientX), { passive:true });
+    carousel.addEventListener('touchend', dragEnd);
+
+    carousel.addEventListener('mousedown', e => { e.preventDefault(); dragStart(e.clientX); });
+    window.addEventListener('mousemove', e => dragMove(e.clientX));
+    window.addEventListener('mouseup', dragEnd);
+
+    carousel.setAttribute('tabindex', '0');
+    carousel.addEventListener('keydown', e => {
+      if(e.key === 'ArrowLeft'){ prev(true); }
+      if(e.key === 'ArrowRight'){ next(true); }
+    });
+
+    render();
+    startAutoplay();
+  }
+
+  // Background music toggle
+  const musicToggle = document.getElementById('musicToggle');
+  const bgMusic = document.getElementById('bgMusic');
+  bgMusic.volume = 0.2;
+  let isPlaying = false;
+  let autoStarted = false;
+
+  function playMusic(){
+    bgMusic.play().then(() => {
+      musicToggle.classList.add('playing');
+      musicToggle.setAttribute('aria-pressed', 'true');
+      musicToggle.setAttribute('aria-label', 'Pause background music');
+      isPlaying = true;
+    }).catch(() => {
+      // playback blocked or source unavailable; user can still use the manual toggle
+    });
+  }
+
+  function pauseMusic(){
+    bgMusic.pause();
+    musicToggle.classList.remove('playing');
+    musicToggle.setAttribute('aria-pressed', 'false');
+    musicToggle.setAttribute('aria-label', 'Play background music');
+    isPlaying = false;
+  }
+
+  musicToggle.addEventListener('click', function(){
+    autoStarted = true;
+    isPlaying ? pauseMusic() : playMusic();
+  });
+
+  function autoStartOnce(e){
+    if(autoStarted || e.target === musicToggle){ return; }
+    autoStarted = true;
+    playMusic();
+    document.removeEventListener('click', autoStartOnce);
+    document.removeEventListener('touchstart', autoStartOnce);
+    document.removeEventListener('keydown', autoStartOnce);
+  }
+
+  document.addEventListener('click', autoStartOnce);
+  document.addEventListener('touchstart', autoStartOnce);
+  document.addEventListener('keydown', autoStartOnce);
+})();
+
+  function initCustomSelect(selectId, triggerId, triggerTextId, optionsId, hiddenInputId){
+    const select = document.getElementById(selectId);
+    const trigger = document.getElementById(triggerId);
+    const triggerText = document.getElementById(triggerTextId);
+    const optionsList = document.getElementById(optionsId);
+    const hiddenInput = document.getElementById(hiddenInputId);
+    const options = Array.from(optionsList.children);
+
+    function closeDropdown(){
+      optionsList.classList.remove('show');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    function openDropdown(){
+      optionsList.classList.add('show');
+      trigger.setAttribute('aria-expanded', 'true');
+    }
+
+    trigger.addEventListener('click', function(e){
+      e.stopPropagation();
+      optionsList.classList.contains('show') ? closeDropdown() : openDropdown();
+    });
+
+    trigger.classList.add('placeholder');
+
+    options.forEach(opt => {
+      opt.addEventListener('click', function(){
+        options.forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        triggerText.textContent = opt.dataset.value;
+        trigger.classList.remove('placeholder');
+        hiddenInput.value = opt.dataset.value;
+        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+        closeDropdown();
+      });
+    });
+
+    document.addEventListener('click', function(e){
+      if(!select.contains(e.target)){
+        closeDropdown();
+      }
+    });
+
+    trigger.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        optionsList.classList.contains('show') ? closeDropdown() : openDropdown();
+      }
+      if(e.key === 'Escape'){ closeDropdown(); }
+    });
+  }
+
+  initCustomSelect('paxAdultSelect', 'paxAdultTrigger', 'paxAdultTriggerText', 'paxAdultOptions', 'paxAdultCount');
+  initCustomSelect('paxKidsSelect', 'paxKidsTrigger', 'paxKidsTriggerText', 'paxKidsOptions', 'paxKidsCount');
+</script>
+
+</body>
+</html>
